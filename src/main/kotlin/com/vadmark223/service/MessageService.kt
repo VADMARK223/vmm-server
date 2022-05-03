@@ -1,10 +1,10 @@
 package com.vadmark223.service
 
-import com.vadmark223.model.Conversation
-import com.vadmark223.model.Conversations
 import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
+import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
 /**
@@ -12,8 +12,20 @@ import org.jetbrains.exposed.sql.selectAll
  * @since 03.05.2022
  */
 class MessageService {
-    suspend fun getAll(): List<Message> = DatabaseFactory.dbQuery {
+    suspend fun getAll(): List<Message> = dbQuery {
         Messages.selectAll().map { toMessage(it) }
+    }
+
+    suspend fun getById(id: Long): Message? = dbQuery {
+        Messages.select {
+            Messages.id eq id
+        }.map { toMessage(it) }.singleOrNull()
+    }
+
+    suspend fun getByConversationId(id: Long): List<Message?> = dbQuery {
+        Messages.select {
+            Messages.conversationId eq id
+        }.map { toMessage(it) }
     }
 
     private fun toMessage(row: ResultRow): Message =
