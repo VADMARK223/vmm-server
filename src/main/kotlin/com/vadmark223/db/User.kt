@@ -1,15 +1,16 @@
 package com.vadmark223.db
 
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
-import org.jetbrains.exposed.dao.id.EntityID
+import org.jetbrains.exposed.sql.Table
 
 /**
  * @author Markitanov Vadim
  * @since 03.05.2022
  */
-class User(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<User>(Users)
-
-    var firstName by Users.firstName
+object Users : Table("users") {
+    val id = long("id").autoIncrement()
+    val firstName = text("first_name")
+    override val primaryKey = PrimaryKey(id)
 }
+
+@kotlinx.serialization.Serializable
+data class User(val id: Long, val firstName: String)
