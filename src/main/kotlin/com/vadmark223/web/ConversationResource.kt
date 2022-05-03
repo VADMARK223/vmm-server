@@ -25,5 +25,10 @@ fun Route.conversation(service: ConversationService) {
             val result = service.add()
             call.respond("Created conversation id: $result")
         }
+
+        post {
+            service.update(31)
+            call.respond("Updated")
+        }
     }
 }

@@ -2,11 +2,11 @@ package com.vadmark223.service
 
 import com.vadmark223.model.Conversation
 import com.vadmark223.model.Conversations
+import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.deleteWhere
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 /**
  * @author Markitanov Vadim
@@ -15,6 +15,22 @@ import org.jetbrains.exposed.sql.selectAll
 class ConversationService {
     suspend fun getAll(): List<Conversation> = dbQuery {
         Conversations.selectAll().map { toConversation(it) }
+    }
+
+    suspend fun getById(id: Long): Conversation? = dbQuery {
+        Messages.select {
+            Messages.id eq id
+        }.map { toConversation(it) }.singleOrNull()
+    }
+
+    suspend fun update(id: Long) {
+        println("Try update: $id")
+
+        dbQuery {
+            Conversations.update({ Conversations.id eq id }) {
+                it[name] = "New" + Random.nextInt(100)
+            }
+        }
     }
 
     suspend fun add(): Long {
