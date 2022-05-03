@@ -9,10 +9,15 @@ import io.ktor.server.routing.*
  * @author Markitanov Vadim
  * @since 03.05.2022
  */
-fun Route.conversation(conversationService: ConversationService) {
+fun Route.conversation(service: ConversationService) {
     route("/conversations") {
         get {
-            call.respond(conversationService.getAll())
+            call.respond(service.getAll())
+        }
+
+        delete("/{id}") {
+            val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
+            service.delete(id)
         }
     }
 }
