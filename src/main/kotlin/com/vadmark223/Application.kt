@@ -1,6 +1,7 @@
 package com.vadmark223
 
 import com.vadmark223.plugins.configureSerialization
+import com.vadmark223.plugins.configureSockets
 import com.vadmark223.service.ConversationService
 import com.vadmark223.service.DatabaseFactory
 import com.vadmark223.service.MessageService
@@ -23,6 +24,7 @@ fun main() {
             conversation(ConversationService())
             message(MessageService())
         }
+        configureSockets()
 
     }.start(wait = true)
 }
