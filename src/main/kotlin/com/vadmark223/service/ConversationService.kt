@@ -5,6 +5,7 @@ import com.vadmark223.model.Conversations
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 
 /**
@@ -14,6 +15,13 @@ import org.jetbrains.exposed.sql.selectAll
 class ConversationService {
     suspend fun getAll(): List<Conversation> = dbQuery {
         Conversations.selectAll().map { toConversation(it) }
+    }
+
+    suspend fun add() {
+        return dbQuery {
+//            Conversations.insert { it[name] = "New" }
+            Conversations.insert {}
+        }
     }
 
     suspend fun delete(id: Long): Boolean {

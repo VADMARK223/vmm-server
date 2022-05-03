@@ -17,7 +17,14 @@ fun Route.conversation(service: ConversationService) {
 
         delete("/{id}") {
             val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
-            service.delete(id)
+            val result = service.delete(id)
+            call.respond(result)
+        }
+
+        put {
+            println("PUT")
+            val result = service.add()
+            call.respond(result)
         }
     }
 }
