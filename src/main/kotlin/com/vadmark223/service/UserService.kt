@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.selectAll
  * @since 03.05.2022
  */
 class UserService {
-    suspend fun getAllUsers(): List<User> = dbQuery {
+    suspend fun getAll(): List<User> = dbQuery {
         Users.selectAll().map { toUser(it) }
     }
 
