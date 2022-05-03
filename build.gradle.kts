@@ -30,9 +30,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
     implementation("org.postgresql:postgresql:42.3.4")
-    implementation("org.jetbrains.exposed:exposed-core:0.38.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.38.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.1")
+    implementation("org.jetbrains.exposed:exposed-core:0.38.2")
+    implementation("org.jetbrains.exposed:exposed-dao:0.38.2")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.38.2")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.38.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+//    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
 
 
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
