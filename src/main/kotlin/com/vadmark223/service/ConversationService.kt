@@ -17,11 +17,16 @@ class ConversationService {
         Conversations.selectAll().map { toConversation(it) }
     }
 
-    suspend fun add() {
-        return dbQuery {
-//            Conversations.insert { it[name] = "New" }
-            Conversations.insert {}
+    suspend fun add(): Long {
+        var createdConversationId: Long = 0
+        dbQuery {
+            createdConversationId = (
+                    Conversations.insert {
+//                        it[name] = "New"
+                    } get Conversations.id)
         }
+
+        return createdConversationId
     }
 
     suspend fun delete(id: Long): Boolean {
