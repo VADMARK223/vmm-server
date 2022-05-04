@@ -22,8 +22,6 @@ fun Application.configureSockets() {
     routing {
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
         webSocket("/chat") {
-            send("Add user!!")
-
             val thisConnection = Connection(this)
             connections += thisConnection
 
@@ -38,7 +36,7 @@ fun Application.configureSockets() {
             } catch (e: Exception) {
                 println(e.localizedMessage)
             } finally {
-                println("Removing $thisConnection!")
+                println("Removing ${thisConnection.name}!")
                 connections -= thisConnection
             }
         }
