@@ -6,7 +6,6 @@ import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 /**
  * @author Markitanov Vadim
@@ -33,18 +32,25 @@ class ConversationService {
         }
     }
 
-    suspend fun add(): Long {
-        var createdConversationId: Long = 0
+    suspend fun add(): Conversation {
+        lateinit var result: Conversation
         dbQuery {
-            createdConversationId = (
-                    Conversations.insert {
+            val new = Conversations.insert {
 //                        it[name] = "New"
-                    } get Conversations.id)
+            }
+
+            val rowResult = new.resultedValues?.first()
+
+            result = Conversation(
+                rowResult?.get(Conversations.id) as Long,
+                rowResult[Conversations.name],
+                rowResult[Conversations.createTime].toString(),
+                rowResult[Conversations.updateTime].toString()
+            )
         }
 
-        println("New: $createdConversationId")
 
-        return createdConversationId
+        return result
     }
 
     suspend fun delete(id: Long): Boolean {
