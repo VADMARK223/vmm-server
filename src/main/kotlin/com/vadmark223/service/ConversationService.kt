@@ -42,6 +42,8 @@ class ConversationService {
                     } get Conversations.id)
         }
 
+        println("New: $createdConversationId")
+
         return createdConversationId
     }
 
