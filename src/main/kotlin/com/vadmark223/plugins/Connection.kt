@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * @author Markitanov Vadim
  * @since 03.05.2022
  */
-class Connection(val session: DefaultWebSocketSession) {
-    companion object{
+class Connection(val session: DefaultWebSocketSession, val userId: String?) {
+    companion object {
         var lastId = AtomicInteger(0)
     }
 

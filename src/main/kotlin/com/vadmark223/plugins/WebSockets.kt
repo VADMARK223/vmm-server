@@ -22,22 +22,37 @@ fun Application.configureSockets() {
     routing {
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
         webSocket("/chat") {
-            val thisConnection = Connection(this)
-            connections += thisConnection
+            val userId = this.call.request.queryParameters["userId"]
+            println("Try connect user: $userId")
+            if (userId == null) {
+                send("User id is null!")
+                return@webSocket
+            }
+            println("New user connected: $userId")
+
+            val connection = Connection(this, userId)
+            connections += connection
 
             try {
-                send("You are connected! There are ${connections.count()}")
+                send("You are connected (${connection.userId})! Total connections: ${connections.count()}")
+                connections.forEach {
+                    if (it != connection) {
+                        it.session.send("User ${connection.userId} connected.")
+                    }
+                }
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
-                    val textWithUsername = "[${thisConnection.name}]: $receivedText"
+                    val textWithUsername = "[${connection.userId}]: $receivedText"
                     connections.forEach { it.session.send(textWithUsername) }
                 }
             } catch (e: Exception) {
                 println(e.localizedMessage)
             } finally {
-                println("Removing ${thisConnection.name}!")
-                connections -= thisConnection
+                val disconnectedMessage = "User ${connection.userId} disconnected."
+                println(disconnectedMessage)
+                connections -= connection
+                connections.forEach { it.session.send(disconnectedMessage) }
             }
         }
     }
