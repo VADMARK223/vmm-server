@@ -34,7 +34,7 @@ fun Route.conversation(service: ConversationService) {
         }
     }
 
-    webSocket("/updates") {
+    webSocket("/conversations") {
         try {
             service.addChangeListener(this.hashCode()) {
                 sendSerialized(it)

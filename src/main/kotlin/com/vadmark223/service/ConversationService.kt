@@ -18,7 +18,7 @@ class ConversationService {
 
     fun removeChangeListener(id: Int) = listeners.remove(id)
 
-    private suspend fun onChange(type: ChangeType, id:Long, entity: Conversation? = null) {
+    private suspend fun onChange(type: ChangeType, id: Long, entity: Conversation? = null) {
         println("CHANGE!")
         listeners.values.forEach {
             it.invoke(Notification(type, id, entity))
@@ -69,9 +69,17 @@ class ConversationService {
     }
 
     suspend fun delete(id: Long): Boolean {
-        return dbQuery {
-            Conversations.deleteWhere { Conversations.id eq id } > 0
+        var result = false
+
+        dbQuery {
+            result = Conversations.deleteWhere { Conversations.id eq id } > 0
         }
+
+        if (result) {
+            onChange(ChangeType.DELETE, id)
+        }
+
+        return result
     }
 
     private fun toConversation(row: ResultRow): Conversation =

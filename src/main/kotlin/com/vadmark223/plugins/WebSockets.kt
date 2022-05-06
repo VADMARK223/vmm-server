@@ -20,7 +20,7 @@ import java.util.*
 fun Application.configureSockets() {
 
 
-    routing {
+   /* routing {
         webSocket("/conversations") {
             println("Connect conversations.")
 
@@ -30,7 +30,7 @@ fun Application.configureSockets() {
             val forSend = defaultMapper.encodeToString(conversationNotification)
             send(forSend)
         }
-    }
+    }*/
 
     routing {
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
