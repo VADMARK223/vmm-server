@@ -1,6 +1,8 @@
 package com.vadmark223.plugins
 
+import com.vadmark223.model.ChangeType
 import com.vadmark223.model.Conversation
+import com.vadmark223.model.ConversationNotification
 import com.vadmark223.util.JsonMapper.defaultMapper
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -28,7 +30,9 @@ fun Application.configureSockets() {
             println("Connect conversations.")
 
             val conversation = Conversation(3, "234", LocalDateTime.now().toString(), LocalDateTime.now().toString())
-            val forSend = defaultMapper.encodeToString(conversation)
+            val conversationNotification = ConversationNotification(ChangeType.CREATE, 9999L, conversation)
+
+            val forSend = defaultMapper.encodeToString(conversationNotification)
             send(forSend)
         }
     }

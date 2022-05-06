@@ -12,3 +12,4 @@ data class Notification<T>(val type: ChangeType, val id: Long, val entity: T)
 
 typealias UserNotification = Notification<User?>
 typealias MessageNotification = Notification<Message?>
+typealias ConversationNotification = Notification<Conversation?>
