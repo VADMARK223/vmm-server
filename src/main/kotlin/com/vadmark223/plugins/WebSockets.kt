@@ -1,10 +1,14 @@
 package com.vadmark223.plugins
 
+import com.vadmark223.model.Conversation
+import com.vadmark223.util.JsonMapper.defaultMapper
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.serialization.encodeToString
 import java.time.Duration
+import java.time.LocalDateTime
 import java.util.*
 
 /**
@@ -17,6 +21,16 @@ fun Application.configureSockets() {
         timeout = Duration.ofSeconds(15)
         maxFrameSize = Long.MAX_VALUE
         masking = false
+    }
+
+    routing {
+        webSocket("/conversations") {
+            println("Connect conversations.")
+
+            val conversation = Conversation(3, "234", LocalDateTime.now().toString(), LocalDateTime.now().toString())
+            val forSend = defaultMapper.encodeToString(conversation)
+            send(forSend)
+        }
     }
 
     routing {
