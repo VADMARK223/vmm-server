@@ -26,5 +26,6 @@ data class Conversation(
     val id: Long,
     val name: String,
     val createTime: String,
-    val updateTime: String
+    val updateTime: String,
+    val ownerId:Long
 )

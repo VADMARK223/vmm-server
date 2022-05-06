@@ -51,6 +51,7 @@ class ConversationService {
         dbQuery {
             val new = Conversations.insert {
 //                        it[name] = "New"
+                it[ownerId] = 1
             }
 
             val rowResult = new.resultedValues?.first()
@@ -59,7 +60,8 @@ class ConversationService {
                 rowResult?.get(Conversations.id) as Long,
                 rowResult[Conversations.name],
                 rowResult[Conversations.createTime].toString(),
-                rowResult[Conversations.updateTime].toString()
+                rowResult[Conversations.updateTime].toString(),
+                rowResult[Conversations.ownerId]
             )
         }
 
@@ -87,6 +89,7 @@ class ConversationService {
             id = row[Conversations.id],
             name = row[Conversations.name],
             createTime = row[Conversations.createTime].toString(),
-            updateTime = row[Conversations.updateTime].toString()
+            updateTime = row[Conversations.updateTime].toString(),
+            ownerId = row[Conversations.ownerId]
         )
 }
