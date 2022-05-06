@@ -1,8 +1,6 @@
 package com.vadmark223.service
 
-import com.vadmark223.model.Conversation
-import com.vadmark223.model.Conversations
-import com.vadmark223.model.Messages
+import com.vadmark223.model.*
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import kotlin.random.Random
@@ -12,6 +10,21 @@ import kotlin.random.Random
  * @since 03.05.2022
  */
 class ConversationService {
+    private val listeners = mutableMapOf<Int, suspend (ConversationNotification) -> Unit>()
+
+    fun addChangeListener(id: Int, listener: suspend (ConversationNotification) -> Unit) {
+        listeners[id] = listener
+    }
+
+    fun removeChangeListener(id: Int) = listeners.remove(id)
+
+    private suspend fun onChange(type: ChangeType, id:Long, entity: Conversation? = null) {
+        println("CHANGE!")
+        listeners.values.forEach {
+            it.invoke(Notification(type, id, entity))
+        }
+    }
+
     suspend fun getAll(): List<Conversation> = dbQuery {
         Conversations.selectAll().map { toConversation(it) }
     }
@@ -33,6 +46,7 @@ class ConversationService {
     }
 
     suspend fun add(): Conversation {
+        println("Add conversation.")
         lateinit var result: Conversation
         dbQuery {
             val new = Conversations.insert {
@@ -49,6 +63,7 @@ class ConversationService {
             )
         }
 
+        onChange(ChangeType.CREATE, result.id, result)
 
         return result
     }

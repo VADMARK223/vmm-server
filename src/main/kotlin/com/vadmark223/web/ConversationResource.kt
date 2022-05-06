@@ -4,6 +4,8 @@ import com.vadmark223.service.ConversationService
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 
 /**
  * @author Markitanov Vadim
@@ -29,6 +31,23 @@ fun Route.conversation(service: ConversationService) {
         post {
             service.update(31)
             call.respond("Updated")
+        }
+    }
+
+    webSocket("/updates") {
+        try {
+            service.addChangeListener(this.hashCode()) {
+                sendSerialized(it)
+            }
+            for (frame in incoming) {
+                if (frame.frameType == FrameType.CLOSE) {
+                    break
+                } else if (frame is Frame.Text) {
+                    call.application.environment.log.info("Received websocket message: {}", frame.readText())
+                }
+            }
+        } finally {
+            service.removeChangeListener(this.hashCode())
         }
     }
 }
