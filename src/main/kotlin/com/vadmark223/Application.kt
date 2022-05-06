@@ -1,5 +1,7 @@
 package com.vadmark223
 
+import com.vadmark223.model.Conversations
+import com.vadmark223.model.Users
 import com.vadmark223.plugins.configureSerialization
 import com.vadmark223.plugins.configureSockets
 import com.vadmark223.service.ConversationService
@@ -16,6 +18,9 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 
 fun main() {
@@ -31,6 +36,20 @@ fun main() {
         configureSerialization()
 
         DatabaseFactory.connect()
+
+        transaction {
+            SchemaUtils.drop(Conversations, Users)
+            SchemaUtils.create(Conversations, Users)
+            val newUser = Users.insert { }
+            val newUserId = newUser[Users.id]
+            println("New user: $newUserId")
+
+            Conversations.insert {
+                it[ownerId] = newUserId
+            }
+
+        }
+
         install(Routing) {
             user(UserService())
             conversation(ConversationService())

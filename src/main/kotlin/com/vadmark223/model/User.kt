@@ -1,9 +1,11 @@
 package com.vadmark223.model
 
+import com.vadmark223.model.Conversations.default
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
+import kotlin.random.Random
 
 /**
  * @author Markitanov Vadim
@@ -11,9 +13,9 @@ import org.jetbrains.exposed.sql.javatime.datetime
  */
 object Users : Table() {
     val id = long("id").autoIncrement()
-    val firstName = text("first_name")
-    val lastName = text("last_name")
-    val createTime = datetime("create_time")
+    val firstName = varchar("first_name", 50).default("First #" + Random.nextInt(100).toString())
+    val lastName = varchar("last_name", 50).default("Last #" + Random.nextInt(100).toString())
+    val createTime = datetime("create_time").default(java.time.LocalDateTime.now())
     override val primaryKey = PrimaryKey(id)
 }
 

@@ -1,8 +1,11 @@
 package com.vadmark223.model
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 /**
  * @author Markitanov Vadim
@@ -10,9 +13,11 @@ import org.jetbrains.exposed.sql.javatime.datetime
  */
 object Conversations : Table() {
     val id = long("id").autoIncrement()
-    val name = text("name")
-    val createTime = datetime("create_time")
-    val updateTime = datetime("update_time")
+    val name = varchar("name", 50).default("Conversation #" + Random.nextInt(100).toString())
+    val createTime = datetime("create_time").default(LocalDateTime.now())
+    val updateTime = datetime("update_time").default(LocalDateTime.now())
+    val ownerId = long("owner_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
+
     override val primaryKey = PrimaryKey(id)
 }
 
