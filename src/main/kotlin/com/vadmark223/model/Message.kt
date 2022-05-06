@@ -3,6 +3,7 @@ package com.vadmark223.model
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
+import java.time.LocalDateTime
 
 /**
  * @author Markitanov Vadim
@@ -12,7 +13,7 @@ object Messages : Table() {
     val id = long("id").autoIncrement()
     val text = text("text")
     val isMy = bool("is_my")
-    val createTime = datetime("create_time")
+    val createTime = datetime("create_time").default(LocalDateTime.now())
     val edited = bool("edited")
     val conversationId = long("conversation_id")
     override val primaryKey = PrimaryKey(id)

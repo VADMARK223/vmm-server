@@ -1,7 +1,5 @@
 package com.vadmark223.model
 
-import com.vadmark223.model.Conversations.default
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime

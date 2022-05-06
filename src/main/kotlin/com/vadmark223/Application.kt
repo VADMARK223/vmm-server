@@ -1,6 +1,8 @@
 package com.vadmark223
 
 import com.vadmark223.model.Conversations
+import com.vadmark223.model.ConversationsUsers
+import com.vadmark223.model.Messages
 import com.vadmark223.model.Users
 import com.vadmark223.plugins.configureSerialization
 import com.vadmark223.plugins.configureSockets
@@ -38,14 +40,39 @@ fun main() {
         DatabaseFactory.connect()
 
         transaction {
-            SchemaUtils.drop(Conversations, Users)
-            SchemaUtils.create(Conversations, Users)
-            val newUser = Users.insert { }
-            val newUserId = newUser[Users.id]
-            println("New user: $newUserId")
+            SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
+            SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
 
-            Conversations.insert {
+
+            Users.insert { }
+            Users.insert { }
+            Users.insert { }
+
+            val newUser = Users.insert { }
+
+            val newUserId = newUser[Users.id]
+            println("New user id: $newUserId")
+
+            Conversations.insert { it[ownerId] = newUserId }
+            Conversations.insert { it[ownerId] = newUserId }
+            Conversations.insert { it[ownerId] = newUserId }
+
+            val newConversation = Conversations.insert {
                 it[ownerId] = newUserId
+            }
+            val newConversationId = newConversation[Conversations.id]
+            println("New conversation id: $newUserId")
+
+            Messages.insert {
+                it[text] = "Message"
+                it[conversationId] = 1
+                it[isMy] = true
+                it[edited] = false
+            }
+
+            ConversationsUsers.insert {
+                it[conversationId] = newConversationId
+                it[userId] = newUserId
             }
 
         }
