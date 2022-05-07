@@ -1,13 +1,13 @@
 package com.vadmark223.service
 
 import com.vadmark223.dto.MessageDto
+import com.vadmark223.model.ChangeType
+import com.vadmark223.model.Conversations
 import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import kotlin.properties.Delegates
 
 /**
@@ -46,6 +46,20 @@ class MessageService {
         return getById(newMessageId)
     }
 
+    suspend fun delete(id: Long): Boolean {
+        var result = false
+
+        dbQuery {
+            result = Messages.deleteWhere { Messages.id eq id } > 0
+        }
+
+//        if (result) {
+//            onChange(ChangeType.DELETE, id)
+//        }
+
+        return result
+    }
+
     private fun toMessage(row: ResultRow): Message =
         Message(
             id = row[Messages.id],
@@ -55,4 +69,6 @@ class MessageService {
             edited = row[Messages.edited],
             conversationId = row[Messages.conversationId]
         )
+
+
 }

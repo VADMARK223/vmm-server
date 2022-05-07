@@ -37,5 +37,11 @@ fun Route.message(service: MessageService) {
             val newMessage = service.add(messageDto)
             if (newMessage == null) call.respond(HttpStatusCode.NotFound) else call.respond(newMessage)
         }
+
+        delete("/{id}") {
+            val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
+            val result = service.delete(id)
+            call.respond(result)
+        }
     }
 }
