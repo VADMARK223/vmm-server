@@ -1,7 +1,10 @@
 package com.vadmark223.web
 
+import com.vadmark223.dto.ConversationDto
 import com.vadmark223.service.ConversationService
+import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -24,8 +27,10 @@ fun Route.conversation(service: ConversationService) {
         }
 
         put {
-            val result = service.add()
-            call.respond(result)
+            val conversationDto = call.receive<ConversationDto>()
+            println("Conversation dto: $conversationDto");
+            val newEntity = service.add(conversationDto)
+            if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
         }
 
         post {

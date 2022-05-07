@@ -13,7 +13,7 @@ import kotlin.random.Random
  */
 object Conversations : Table() {
     val id = long("id").autoIncrement()
-    val name = varchar("name", 50).default("Conversation #" + Random.nextInt(100).toString())
+    val name = varchar("name", 50)//.default("Conversation #" + Random.nextInt(100).toString())
     val createTime = datetime("create_time").default(LocalDateTime.now())
     val updateTime = datetime("update_time").default(LocalDateTime.now())
     val ownerId = long("owner_id").references(Users.id, onDelete = ReferenceOption.CASCADE)

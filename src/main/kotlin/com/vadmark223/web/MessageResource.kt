@@ -34,8 +34,8 @@ fun Route.message(service: MessageService) {
             val messageDto = call.receive<MessageDto>()
             println("Message dto: $messageDto")
 
-            val newMessage = service.add(messageDto)
-            if (newMessage == null) call.respond(HttpStatusCode.NotFound) else call.respond(newMessage)
+            val newEntity = service.add(messageDto)
+            if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
         }
 
         delete("/{id}") {

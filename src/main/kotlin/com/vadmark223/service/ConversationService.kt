@@ -1,5 +1,6 @@
 package com.vadmark223.service
 
+import com.vadmark223.dto.ConversationDto
 import com.vadmark223.model.*
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
@@ -45,13 +46,13 @@ class ConversationService {
         }
     }
 
-    suspend fun add(): Conversation {
-        println("Add conversation.")
+    suspend fun add(conversationDto: ConversationDto): Conversation {
+        println("Add conversation dto: $conversationDto")
         lateinit var result: Conversation
         dbQuery {
             val new = Conversations.insert {
-//                        it[name] = "New"
-                it[ownerId] = 1
+                it[name] = conversationDto.name
+                it[ownerId] = conversationDto.ownerId
             }
 
             val rowResult = new.resultedValues?.first()

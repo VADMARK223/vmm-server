@@ -39,11 +39,12 @@ fun main() {
 
         DatabaseFactory.connect()
 
-        /*transaction {
+        transaction {
             SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
-
             Users.insert { }
+
+            /*Users.insert { }
             Users.insert { }
             Users.insert { }
 
@@ -79,9 +80,9 @@ fun main() {
             ConversationsUsers.insert {
                 it[conversationId] = newConversationId
                 it[userId] = newUserId
-            }
+            }*/
 
-        }*/
+        }
 
         install(Routing) {
             user(UserService())
