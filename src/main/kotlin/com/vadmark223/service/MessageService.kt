@@ -32,7 +32,7 @@ class MessageService {
         Message(
             id = row[Messages.id],
             text = row[Messages.text],
-            isMy = row[Messages.isMy],
+            ownerId = row[Messages.ownerId],
             createTime = row[Messages.createTime].toString(),
             edited = row[Messages.edited],
             conversationId = row[Messages.conversationId]

@@ -65,7 +65,14 @@ fun main() {
             Messages.insert {
                 it[text] = "Message"
                 it[conversationId] = 1
-                it[isMy] = true
+                it[ownerId] = newUserId
+                it[edited] = false
+            }
+
+            Messages.insert {
+                it[text] = "My message"
+                it[conversationId] = 1
+                it[ownerId] = 1
                 it[edited] = false
             }
 

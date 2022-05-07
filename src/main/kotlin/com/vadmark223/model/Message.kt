@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 object Messages : Table() {
     val id = long("id").autoIncrement()
     val text = text("text")
-    val isMy = bool("is_my")
+    val ownerId = long("owner_id").references(Users.id)
     val createTime = datetime("create_time").default(LocalDateTime.now())
     val edited = bool("edited")
     val conversationId = long("conversation_id").references(Conversations.id, onDelete = ReferenceOption.CASCADE)
@@ -24,7 +24,7 @@ object Messages : Table() {
 data class Message(
     val id: Long,
     val text: String,
-    val isMy: Boolean,
+    val ownerId: Long,
     val createTime: String,
     val edited: Boolean,
     val conversationId: Long
