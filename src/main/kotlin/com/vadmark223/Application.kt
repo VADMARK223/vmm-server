@@ -43,7 +43,6 @@ fun main() {
             SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
 
-
             Users.insert { }
             Users.insert { }
             Users.insert { }

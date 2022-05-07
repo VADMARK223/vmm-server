@@ -1,6 +1,7 @@
 package com.vadmark223.model
 
 import kotlinx.serialization.Serializable
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime
 import java.time.LocalDateTime
@@ -15,7 +16,7 @@ object Messages : Table() {
     val isMy = bool("is_my")
     val createTime = datetime("create_time").default(LocalDateTime.now())
     val edited = bool("edited")
-    val conversationId = long("conversation_id")
+    val conversationId = long("conversation_id").references(Conversations.id, onDelete = ReferenceOption.CASCADE)
     override val primaryKey = PrimaryKey(id)
 }
 
