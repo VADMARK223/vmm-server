@@ -15,7 +15,7 @@ object Messages : Table() {
     val text = text("text")
     val ownerId = long("owner_id").references(Users.id)
     val createTime = datetime("create_time").default(LocalDateTime.now())
-    val edited = bool("edited")
+    val edited = bool("edited").default(false)
     val conversationId = long("conversation_id").references(Conversations.id, onDelete = ReferenceOption.CASCADE)
     override val primaryKey = PrimaryKey(id)
 }

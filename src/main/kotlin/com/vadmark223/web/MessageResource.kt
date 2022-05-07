@@ -1,8 +1,10 @@
 package com.vadmark223.web
 
+import com.vadmark223.dto.MessageDto
 import com.vadmark223.service.MessageService
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -25,7 +27,15 @@ fun Route.message(service: MessageService) {
         get("/conversation/{id}") {
             val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
             val message = service.getByConversationId(id)
-            if (message == null) call.respond(HttpStatusCode.NotFound) else call.respond(message)
+            call.respond(message)
+        }
+
+        put {
+            val messageDto = call.receive<MessageDto>()
+            println("Message dto: $messageDto")
+
+            val newMessage = service.add(messageDto)
+            if (newMessage == null) call.respond(HttpStatusCode.NotFound) else call.respond(newMessage)
         }
     }
 }

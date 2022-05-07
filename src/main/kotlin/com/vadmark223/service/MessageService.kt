@@ -1,11 +1,14 @@
 package com.vadmark223.service
 
+import com.vadmark223.dto.MessageDto
 import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import kotlin.properties.Delegates
 
 /**
  * @author Markitanov Vadim
@@ -26,6 +29,21 @@ class MessageService {
         Messages.select {
             Messages.conversationId eq id
         }.map { toMessage(it) }
+    }
+
+    suspend fun add(messageDto: MessageDto): Message? {
+        var newMessageId by Delegates.notNull<Long>()
+        dbQuery {
+            val newEntity = Messages.insert {
+                it[text] = messageDto.text
+                it[ownerId] = messageDto.ownerId
+                it[conversationId] = messageDto.conversationId
+            }
+
+            newMessageId = newEntity[Messages.id]
+        }
+
+        return getById(newMessageId)
     }
 
     private fun toMessage(row: ResultRow): Message =

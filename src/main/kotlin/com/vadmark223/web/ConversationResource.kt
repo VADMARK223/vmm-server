@@ -23,7 +23,7 @@ fun Route.conversation(service: ConversationService) {
             call.respond(result)
         }
 
-        put (){
+        put {
             val result = service.add()
             call.respond(result)
         }
