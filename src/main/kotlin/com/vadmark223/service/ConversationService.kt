@@ -57,8 +57,21 @@ class ConversationService {
 
             val rowResult = new.resultedValues?.first()
 
+            val newConversationId = rowResult?.get(Conversations.id) as Long
+            println("newConversationId: $newConversationId")
+
+            ConversationsUsers.insert {
+                it[conversationId] = newConversationId
+                it[userId] = conversationDto.ownerId
+            }
+
+            ConversationsUsers.batchInsert(conversationDto.memberIds) {
+                this[ConversationsUsers.conversationId] = newConversationId
+                this[ConversationsUsers.userId] = it
+            }
+
             result = Conversation(
-                rowResult?.get(Conversations.id) as Long,
+                newConversationId,
                 rowResult[Conversations.name],
                 rowResult[Conversations.createTime].toString(),
                 rowResult[Conversations.updateTime].toString(),

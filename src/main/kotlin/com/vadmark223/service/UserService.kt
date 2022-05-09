@@ -20,6 +20,6 @@ class UserService {
             id = row[Users.id],
             firstName = row[Users.firstName],
             lastName = row[Users.lastName],
-            createTime = row[Users.createTime].toString()
+            createTime = row[Users.createTime]
         )
 }

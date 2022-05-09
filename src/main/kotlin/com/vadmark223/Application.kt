@@ -1,9 +1,6 @@
 package com.vadmark223
 
-import com.vadmark223.model.Conversations
-import com.vadmark223.model.ConversationsUsers
-import com.vadmark223.model.Messages
-import com.vadmark223.model.Users
+import com.vadmark223.model.*
 import com.vadmark223.plugins.configureSerialization
 import com.vadmark223.plugins.configureSockets
 import com.vadmark223.service.ConversationService
@@ -21,7 +18,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 
@@ -42,12 +39,30 @@ fun main() {
         transaction {
             SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
-            Users.insert { }
 
-            /*Users.insert { }
-            Users.insert { }
-            Users.insert { }
+            val users = listOf(
+                User(1, "Vadim", "Markitanov"),
+                User(2, "German", "Doronin")
+            )
 
+            Users.batchInsert(users) {
+                this[Users.id] = it.id
+                this[Users.firstName] = it.firstName
+                this[Users.lastName] = it.lastName
+            }
+
+            /*Users.insert {
+                it[firstName] = "Vadim"
+                it[lastName] = "Markitanov"
+            }
+            for (i in 0..10) {
+                Users.insert {
+                    it[firstName] = "Name#${Random.nextInt(100)}"
+                    it[lastName] = "Last#${Random.nextInt(100)}"
+                }
+            }*/
+
+            /*
             val newUser = Users.insert { }
 
             val newUserId = newUser[Users.id]

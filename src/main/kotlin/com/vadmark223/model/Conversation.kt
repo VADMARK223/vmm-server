@@ -1,11 +1,12 @@
 package com.vadmark223.model
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.javatime.datetime
-import java.time.LocalDateTime
-import kotlin.random.Random
+import org.jetbrains.exposed.sql.kotlin.datetime.datetime
 
 /**
  * @author Markitanov Vadim
@@ -14,8 +15,10 @@ import kotlin.random.Random
 object Conversations : Table() {
     val id = long("id").autoIncrement()
     val name = varchar("name", 50)//.default("Conversation #" + Random.nextInt(100).toString())
-    val createTime = datetime("create_time").default(LocalDateTime.now())
-    val updateTime = datetime("update_time").default(LocalDateTime.now())
+    val createTime =
+        datetime("create_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
+    val updateTime =
+        datetime("update_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     val ownerId = long("owner_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
 
     override val primaryKey = PrimaryKey(id)
@@ -27,5 +30,5 @@ data class Conversation(
     val name: String,
     val createTime: String,
     val updateTime: String,
-    val ownerId:Long
+    val ownerId: Long
 )
