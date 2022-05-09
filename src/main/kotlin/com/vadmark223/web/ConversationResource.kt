@@ -1,6 +1,9 @@
 package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
+import com.vadmark223.model.ChangeType
+import com.vadmark223.model.Conversation
+import com.vadmark223.model.ConversationNotification
 import com.vadmark223.service.ConversationService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -9,6 +12,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import java.time.LocalDateTime
 
 /**
  * @author Markitanov Vadim
@@ -40,6 +44,11 @@ fun Route.conversation(service: ConversationService) {
     }
 
     webSocket("/conversations") {
+        println("Connect to conversations.")
+
+//        val conversation = Conversation(3, "234", LocalDateTime.now().toString(), LocalDateTime.now().toString(), 1)
+//        sendSerialized(ConversationNotification(ChangeType.CREATE, 1, conversation))
+
         try {
             service.addChangeListener(this.hashCode()) {
                 sendSerialized(it)
