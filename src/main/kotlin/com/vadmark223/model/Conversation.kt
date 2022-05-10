@@ -21,6 +21,7 @@ object Conversations : Table() {
         datetime("update_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     val ownerId = long("owner_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
     val isPrivate = bool("is_private").default(false)
+    val membersCount = integer("members_count")
 
     override val primaryKey = PrimaryKey(id)
 }
@@ -32,5 +33,6 @@ data class Conversation(
     val createTime: String,
     val updateTime: String,
     val ownerId: Long,
-    val isPrivate: Boolean
+    val isPrivate: Boolean,
+    val membersCount: Int
 )

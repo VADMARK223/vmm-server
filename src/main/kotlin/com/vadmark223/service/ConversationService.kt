@@ -49,10 +49,15 @@ class ConversationService {
         println("Add conversation dto: $conversationDto")
         lateinit var result: Conversation
         dbQuery {
+
+            val allIds = mutableListOf(conversationDto.ownerId)
+            allIds.addAll(conversationDto.memberIds)
+
             val new = Conversations.insert {
                 it[name] = conversationDto.name
                 it[ownerId] = conversationDto.ownerId
                 it[isPrivate] = conversationDto.isPrivate
+                it[membersCount] = allIds.size
             }
 
             val rowResult = new.resultedValues?.first()
@@ -60,21 +65,13 @@ class ConversationService {
             val newConversationId = rowResult?.get(Conversations.id) as Long
             println("newConversationId: $newConversationId")
 
-            val allIds = mutableListOf(conversationDto.ownerId)
-            allIds.addAll(conversationDto.memberIds)
+
             ConversationsUsers.batchInsert(allIds) {
                 this[ConversationsUsers.conversationId] = newConversationId
                 this[ConversationsUsers.userId] = it
             }
 
-            result = toConversation(rowResult)/*Conversation(
-                newConversationId,
-                rowResult[Conversations.name],
-                rowResult[Conversations.createTime].toString(),
-                rowResult[Conversations.updateTime].toString(),
-                rowResult[Conversations.ownerId],
-                rowResult[Conversations.isPrivate]
-            )*/
+            result = toConversation(rowResult)
 
             onChange(ChangeType.CREATE, result.id, allIds, result)
         }
@@ -103,6 +100,7 @@ class ConversationService {
             createTime = row[Conversations.createTime].toString(),
             updateTime = row[Conversations.updateTime].toString(),
             ownerId = row[Conversations.ownerId],
-            isPrivate = row[Conversations.isPrivate]
+            isPrivate = row[Conversations.isPrivate],
+            membersCount = row[Conversations.membersCount]
         )
 }
