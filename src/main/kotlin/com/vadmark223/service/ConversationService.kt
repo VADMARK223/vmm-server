@@ -60,12 +60,14 @@ class ConversationService {
             val newConversationId = rowResult?.get(Conversations.id) as Long
             println("newConversationId: $newConversationId")
 
-            ConversationsUsers.insert {
+            /*ConversationsUsers.insert {
                 it[conversationId] = newConversationId
                 it[userId] = conversationDto.ownerId
-            }
+            }*/
 
-            ConversationsUsers.batchInsert(conversationDto.memberIds) {
+            val allIds = mutableListOf(conversationDto.ownerId)
+            allIds.addAll(conversationDto.memberIds)
+            ConversationsUsers.batchInsert(allIds) {
                 this[ConversationsUsers.conversationId] = newConversationId
                 this[ConversationsUsers.userId] = it
             }

@@ -1,9 +1,6 @@
 package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
-import com.vadmark223.model.ChangeType
-import com.vadmark223.model.Conversation
-import com.vadmark223.model.ConversationNotification
 import com.vadmark223.service.ConversationService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -12,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import java.time.LocalDateTime
+import java.util.*
 
 /**
  * @author Markitanov Vadim
@@ -42,26 +39,34 @@ fun Route.conversation(service: ConversationService) {
             call.respond("Updated")
         }
     }
-
+    val connections = Collections.synchronizedSet<ConversationConnection?>(LinkedHashSet())
     webSocket("/conversations") {
-        println("Connect to conversations.")
+        val userId = this.call.request.queryParameters["userId"]
 
-//        val conversation = Conversation(3, "234", LocalDateTime.now().toString(), LocalDateTime.now().toString(), 1)
-//        sendSerialized(ConversationNotification(ChangeType.CREATE, 1, conversation))
+        val connection = ConversationConnection(this, userId)
+        connections += connection
+
+        println("Connect to conversations. User: $userId Total: ${connections.size}")
 
         try {
-            service.addChangeListener(this.hashCode()) {
-                sendSerialized(it)
+            service.addChangeListener(1/*this.hashCode()*/) { notification ->
+                connections.forEach {
+                    println("Send to ${it.userId}")
+                    it.session.sendSerialized(notification)
+                }
             }
             for (frame in incoming) {
                 if (frame.frameType == FrameType.CLOSE) {
+                    println("Close frame.")
                     break
                 } else if (frame is Frame.Text) {
                     call.application.environment.log.info("Received websocket message: {}", frame.readText())
                 }
             }
         } finally {
-            service.removeChangeListener(this.hashCode())
+            println("Disconnected $userId")
+            connections -= connection
+//            service.removeChangeListener(1/*this.hashCode()*/)
         }
     }
 }
