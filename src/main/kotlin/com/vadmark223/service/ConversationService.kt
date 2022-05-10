@@ -52,6 +52,7 @@ class ConversationService {
             val new = Conversations.insert {
                 it[name] = conversationDto.name
                 it[ownerId] = conversationDto.ownerId
+                it[isPrivate] = conversationDto.isPrivate
             }
 
             val rowResult = new.resultedValues?.first()
@@ -66,13 +67,14 @@ class ConversationService {
                 this[ConversationsUsers.userId] = it
             }
 
-            result = Conversation(
+            result = toConversation(rowResult)/*Conversation(
                 newConversationId,
                 rowResult[Conversations.name],
                 rowResult[Conversations.createTime].toString(),
                 rowResult[Conversations.updateTime].toString(),
-                rowResult[Conversations.ownerId]
-            )
+                rowResult[Conversations.ownerId],
+                rowResult[Conversations.isPrivate]
+            )*/
 
             onChange(ChangeType.CREATE, result.id, allIds, result)
         }
@@ -100,6 +102,7 @@ class ConversationService {
             name = row[Conversations.name],
             createTime = row[Conversations.createTime].toString(),
             updateTime = row[Conversations.updateTime].toString(),
-            ownerId = row[Conversations.ownerId]
+            ownerId = row[Conversations.ownerId],
+            isPrivate = row[Conversations.isPrivate]
         )
 }
