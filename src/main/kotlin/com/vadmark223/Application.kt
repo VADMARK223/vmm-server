@@ -43,7 +43,10 @@ fun main() {
             val users = listOf(
                 User(1, "Vadim", "Markitanov"),
                 User(2, "German", "Doronin"),
-                User(3, "Andrey", "Golovnyov")
+                User(3, "Andrey", "Golovnyov"),
+                User(4, "Evgeny", "Vasilyev"),
+                User(5, "Roman", "Imaletdinov"),
+                User(6, "Dmitry", "Kapustin")
             )
 
             Users.batchInsert(users) {
