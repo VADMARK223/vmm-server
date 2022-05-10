@@ -11,18 +11,17 @@ import kotlin.random.Random
  * @since 03.05.2022
  */
 class ConversationService {
-    private val listeners = mutableMapOf<Int, suspend (ConversationNotification) -> Unit>()
+    private val listeners = mutableMapOf<Int, suspend (ConversationNotification, List<Long>) -> Unit>()
 
-    fun addChangeListener(id: Int, listener: suspend (ConversationNotification) -> Unit) {
+    fun addChangeListener(id: Int, listener: suspend (ConversationNotification, List<Long>) -> Unit) {
         listeners[id] = listener
     }
 
     fun removeChangeListener(id: Int) = listeners.remove(id)
 
     private suspend fun onChange(type: ChangeType, id: Long, idsForSend: List<Long>, entity: Conversation? = null) {
-        println("CHANGE!")
         listeners.values.forEach {
-            it.invoke(Notification(type, id, idsForSend, entity))
+            it.invoke(Notification(type, id, entity), idsForSend)
         }
     }
 

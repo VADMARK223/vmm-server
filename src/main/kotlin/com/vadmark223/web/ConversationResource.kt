@@ -49,9 +49,9 @@ fun Route.conversation(service: ConversationService) {
         println("Connect to conversations. User: $userId Total: ${connections.size}")
 
         try {
-            service.addChangeListener(1/*this.hashCode()*/) { notification ->
+            service.addChangeListener(1/*this.hashCode()*/) { notification, idsForSend ->
                 connections.forEach {
-                    val needSend = notification.idsForSend.contains(it.userId?.toLong())
+                    val needSend = idsForSend.contains(it.userId?.toLong())
                     println("Send to ${it.userId} need send: $needSend")
                     if (needSend) {
                         it.session.sendSerialized(notification)

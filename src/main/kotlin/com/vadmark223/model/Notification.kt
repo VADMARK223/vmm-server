@@ -8,7 +8,7 @@ package com.vadmark223.model
 enum class ChangeType { CREATE, UPDATE, DELETE }
 
 @kotlinx.serialization.Serializable
-data class Notification<T>(val type: ChangeType, val id: Long, val idsForSend: List<Long>, val entity: T)
+data class Notification<T>(val type: ChangeType, val id: Long, val entity: T)
 
 typealias UserNotification = Notification<User?>
 typealias MessageNotification = Notification<Message?>
