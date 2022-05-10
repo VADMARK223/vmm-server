@@ -51,8 +51,11 @@ fun Route.conversation(service: ConversationService) {
         try {
             service.addChangeListener(1/*this.hashCode()*/) { notification ->
                 connections.forEach {
-                    println("Send to ${it.userId}")
-                    it.session.sendSerialized(notification)
+                    val needSend = notification.idsForSend.contains(it.userId?.toLong())
+                    println("Send to ${it.userId} need send: $needSend")
+                    if (needSend) {
+                        it.session.sendSerialized(notification)
+                    }
                 }
             }
             for (frame in incoming) {

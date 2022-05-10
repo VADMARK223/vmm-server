@@ -19,10 +19,10 @@ class ConversationService {
 
     fun removeChangeListener(id: Int) = listeners.remove(id)
 
-    private suspend fun onChange(type: ChangeType, id: Long, entity: Conversation? = null) {
+    private suspend fun onChange(type: ChangeType, id: Long, idsForSend: List<Long>, entity: Conversation? = null) {
         println("CHANGE!")
         listeners.values.forEach {
-            it.invoke(Notification(type, id, entity))
+            it.invoke(Notification(type, id, idsForSend, entity))
         }
     }
 
@@ -60,11 +60,6 @@ class ConversationService {
             val newConversationId = rowResult?.get(Conversations.id) as Long
             println("newConversationId: $newConversationId")
 
-            /*ConversationsUsers.insert {
-                it[conversationId] = newConversationId
-                it[userId] = conversationDto.ownerId
-            }*/
-
             val allIds = mutableListOf(conversationDto.ownerId)
             allIds.addAll(conversationDto.memberIds)
             ConversationsUsers.batchInsert(allIds) {
@@ -79,9 +74,9 @@ class ConversationService {
                 rowResult[Conversations.updateTime].toString(),
                 rowResult[Conversations.ownerId]
             )
-        }
 
-        onChange(ChangeType.CREATE, result.id, result)
+            onChange(ChangeType.CREATE, result.id, allIds, result)
+        }
 
         return result
     }
@@ -94,7 +89,7 @@ class ConversationService {
         }
 
         if (result) {
-            onChange(ChangeType.DELETE, id)
+            onChange(ChangeType.DELETE, id, listOf(1L))
         }
 
         return result
