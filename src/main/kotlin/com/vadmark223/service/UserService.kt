@@ -4,6 +4,7 @@ import com.vadmark223.model.User
 import com.vadmark223.model.Users
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
 /**
@@ -13,6 +14,12 @@ import org.jetbrains.exposed.sql.selectAll
 class UserService {
     suspend fun getAll(): List<User> = dbQuery {
         Users.selectAll().map { toUser(it) }
+    }
+
+    suspend fun getById(id: Long): User? = dbQuery {
+        Users.select {
+            Users.id eq id
+        }.map { toUser(it) }.singleOrNull()
     }
 
     private fun toUser(row: ResultRow): User =
