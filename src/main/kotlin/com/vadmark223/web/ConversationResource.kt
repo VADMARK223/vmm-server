@@ -66,8 +66,10 @@ fun Route.conversation(service: ConversationService) {
                     call.application.environment.log.info("Received websocket message: {}", frame.readText())
                 }
             }
+        } catch (e: Exception) {
+            println("Conversation error: ${e.localizedMessage}")
         } finally {
-            println("Disconnected $userId")
+            println("Conversation disconnected userId: $userId.")
             connections -= connection
 //            service.removeChangeListener(1/*this.hashCode()*/)
         }
