@@ -53,6 +53,7 @@ fun main() {
                 this[Users.id] = it.id
                 this[Users.firstName] = it.firstName
                 this[Users.lastName] = it.lastName
+                this[Users.online] = it.online
             }
         }
 

@@ -2,13 +2,16 @@ package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
 import com.vadmark223.model.Conversation
+import com.vadmark223.model.Users
 import com.vadmark223.service.ConversationService
+import com.vadmark223.service.DatabaseFactory
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import org.jetbrains.exposed.sql.update
 import java.util.*
 
 /**
@@ -54,17 +57,24 @@ fun Route.conversation(service: ConversationService) {
     }
     val connections = Collections.synchronizedSet<ConversationConnection?>(LinkedHashSet())
     webSocket("/conversations") {
-        val userId = this.call.request.queryParameters["userId"]
+        val userId =
+            this.call.request.queryParameters["userId"]?.toLong() ?: throw IllegalStateException("Must provide id")
 
         val connection = ConversationConnection(this, userId)
         connections += connection
 
         println("Connect to conversations. User: $userId Total: ${connections.size}")
 
+        DatabaseFactory.dbQuery {
+            Users.update({ Users.id eq userId }) {
+                it[online] = true
+            }
+        }
+
         try {
             service.addChangeListener(1/*this.hashCode()*/) { notification, idsForSend ->
                 connections.forEach {
-                    val needSend = idsForSend.contains(it.userId?.toLong())
+                    val needSend = idsForSend.contains(it.userId)
                     println("Send to ${it.userId} need send: $needSend")
                     if (needSend) {
                         it.session.sendSerialized(notification)
@@ -84,6 +94,13 @@ fun Route.conversation(service: ConversationService) {
         } finally {
             println("Conversation disconnected userId: $userId.")
             connections -= connection
+
+            DatabaseFactory.dbQuery {
+                Users.update({ Users.id eq userId }) {
+                    it[online] = false
+                }
+            }
+
 //            service.removeChangeListener(1/*this.hashCode()*/)
         }
     }

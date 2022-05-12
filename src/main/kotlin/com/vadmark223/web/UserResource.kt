@@ -13,6 +13,7 @@ import io.ktor.server.routing.*
 fun Route.user(userService: UserService) {
     route("/users") {
         get {
+            println("Get all users.")
             call.respond(userService.getAll())
         }
 

@@ -4,6 +4,7 @@ import com.vadmark223.model.User
 import com.vadmark223.model.Users
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 
@@ -13,7 +14,7 @@ import org.jetbrains.exposed.sql.selectAll
  */
 class UserService {
     suspend fun getAll(): List<User> = dbQuery {
-        Users.selectAll().map { toUser(it) }
+        Users.selectAll().orderBy(Users.id to SortOrder.ASC).map { toUser(it) }
     }
 
     suspend fun getById(id: Long): User? = dbQuery {
@@ -27,6 +28,7 @@ class UserService {
             id = row[Users.id],
             firstName = row[Users.firstName],
             lastName = row[Users.lastName],
-            createTime = row[Users.createTime]
+            createTime = row[Users.createTime],
+            online = row[Users.online]
         )
 }

@@ -17,7 +17,9 @@ object Users : Table() {
     val id = long("id").autoIncrement()
     val firstName = varchar("first_name", 50).default("First #" + Random.nextInt(100).toString())
     val lastName = varchar("last_name", 50).default("Last #" + Random.nextInt(100).toString())
-    val createTime = datetime("create_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
+    val createTime =
+        datetime("create_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
+    val online = bool("online").default(false)
     override val primaryKey = PrimaryKey(id)
 }
 
@@ -26,5 +28,6 @@ data class User(
     val id: Long,
     val firstName: String,
     val lastName: String,
-    val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    val online: Boolean = false
 )
