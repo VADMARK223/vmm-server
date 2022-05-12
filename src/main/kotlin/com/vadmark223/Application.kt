@@ -54,53 +54,6 @@ fun main() {
                 this[Users.firstName] = it.firstName
                 this[Users.lastName] = it.lastName
             }
-
-            /*Users.insert {
-                it[firstName] = "Vadim"
-                it[lastName] = "Markitanov"
-            }
-            for (i in 0..10) {
-                Users.insert {
-                    it[firstName] = "Name#${Random.nextInt(100)}"
-                    it[lastName] = "Last#${Random.nextInt(100)}"
-                }
-            }*/
-
-            /*
-            val newUser = Users.insert { }
-
-            val newUserId = newUser[Users.id]
-            println("New user id: $newUserId")
-
-            Conversations.insert { it[ownerId] = newUserId }
-            Conversations.insert { it[ownerId] = newUserId }
-            Conversations.insert { it[ownerId] = newUserId }
-
-            val newConversation = Conversations.insert {
-                it[ownerId] = newUserId
-            }
-            val newConversationId = newConversation[Conversations.id]
-            println("New conversation id: $newUserId")
-
-            Messages.insert {
-                it[text] = "Message"
-                it[conversationId] = 1
-                it[ownerId] = newUserId
-                it[edited] = false
-            }
-
-            Messages.insert {
-                it[text] = "My message"
-                it[conversationId] = 1
-                it[ownerId] = 1
-                it[edited] = false
-            }
-
-            ConversationsUsers.insert {
-                it[conversationId] = newConversationId
-                it[userId] = newUserId
-            }*/
-
         }
 
         install(Routing) {

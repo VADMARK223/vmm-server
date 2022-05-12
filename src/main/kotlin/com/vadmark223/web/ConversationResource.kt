@@ -1,8 +1,8 @@
 package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
+import com.vadmark223.model.Conversation
 import com.vadmark223.service.ConversationService
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -21,6 +21,19 @@ fun Route.conversation(service: ConversationService) {
             call.respond(service.getAll())
         }
 
+        get("/{userId}") {
+            val userId = call.parameters["userId"]?.toLong() ?: throw IllegalStateException("Must provide id")
+            println("Get conversations by user id: $userId")
+
+            val resultList = mutableListOf<Conversation?>()
+            val result = service.selectConversationsByUserId(userId)
+            for (res in result) {
+                resultList.add(service.getById(res.conversationId))
+            }
+
+            call.respond(resultList)
+        }
+
         delete("/{id}") {
             val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
             val result = service.delete(id)
@@ -29,9 +42,9 @@ fun Route.conversation(service: ConversationService) {
 
         put {
             val conversationDto = call.receive<ConversationDto>()
-            println("Conversation dto: $conversationDto");
+            println("Conversation dto: $conversationDto")
             val newEntity = service.add(conversationDto)
-            if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
+            call.respond(newEntity)
         }
 
         post {

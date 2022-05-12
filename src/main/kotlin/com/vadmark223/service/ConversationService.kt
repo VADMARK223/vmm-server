@@ -29,9 +29,21 @@ class ConversationService {
         Conversations.selectAll().map { toConversation(it) }
     }
 
+    suspend fun selectConversationsByUserId(userId: Long): List<ConversationsUsersData> = dbQuery {
+        ConversationsUsers.select {
+            ConversationsUsers.userId eq userId
+        }.map { toConversationsUsers(it) }
+    }
+
+//    suspend fun getById(id: Long): Conversation? = dbQuery {
+//        Messages.select {
+//            Messages.id eq id
+//        }.map { toConversation(it) }.singleOrNull()
+//    }
+
     suspend fun getById(id: Long): Conversation? = dbQuery {
-        Messages.select {
-            Messages.id eq id
+        Conversations.select {
+            Conversations.id eq id
         }.map { toConversation(it) }.singleOrNull()
     }
 
@@ -102,5 +114,11 @@ class ConversationService {
             ownerId = row[Conversations.ownerId],
             isPrivate = row[Conversations.isPrivate],
             membersCount = row[Conversations.membersCount]
+        )
+
+    private fun toConversationsUsers(row: ResultRow): ConversationsUsersData =
+        ConversationsUsersData(
+            conversationId = row[ConversationsUsers.conversationId],
+            userId = row[ConversationsUsers.userId]
         )
 }
