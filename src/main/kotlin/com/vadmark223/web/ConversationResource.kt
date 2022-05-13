@@ -2,16 +2,13 @@ package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
 import com.vadmark223.model.Conversation
-import com.vadmark223.model.Users
 import com.vadmark223.service.ConversationService
-import com.vadmark223.service.DatabaseFactory
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
-import org.jetbrains.exposed.sql.update
 import java.util.*
 
 /**
@@ -65,12 +62,6 @@ fun Route.conversation(service: ConversationService) {
 
         println("Connect to conversations. User: $userId Total: ${connections.size}")
 
-        DatabaseFactory.dbQuery {
-            Users.update({ Users.id eq userId }) {
-                it[online] = true
-            }
-        }
-
         try {
             service.addChangeListener(1/*this.hashCode()*/) { notification, idsForSend ->
                 connections.forEach {
@@ -94,12 +85,6 @@ fun Route.conversation(service: ConversationService) {
         } finally {
             println("Conversation disconnected userId: $userId.")
             connections -= connection
-
-            DatabaseFactory.dbQuery {
-                Users.update({ Users.id eq userId }) {
-                    it[online] = false
-                }
-            }
 
 //            service.removeChangeListener(1/*this.hashCode()*/)
         }

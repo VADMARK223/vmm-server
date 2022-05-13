@@ -42,10 +42,10 @@ fun main() {
 
             val users = listOf(
                 User(1, "Vadim", "Markitanov"),
-                User(2, "German", "Doronin"),
-                User(3, "Andrey", "Golovnyov"),
-                User(4, "Evgeny", "Vasilyev"),
-                User(5, "Roman", "Imaletdinov"),
+                User(2, "Roman", "Imaletdinov"),
+                User(3, "German", "Doronin"),
+                User(4, "Andrey", "Golovnyov"),
+                User(5, "Evgeny", "Vasilyev"),
                 User(6, "Dmitry", "Kapustin")
             )
 
