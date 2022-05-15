@@ -68,7 +68,6 @@ class ConversationService {
             val new = Conversations.insert {
                 it[name] = conversationDto.name
                 it[ownerId] = conversationDto.ownerId
-                it[isPrivate] = conversationDto.isPrivate
                 it[companionId] = conversationDto.companionId
                 it[membersCount] = allIds.size
             }
@@ -113,7 +112,6 @@ class ConversationService {
             createTime = row[Conversations.createTime].toString(),
             updateTime = row[Conversations.updateTime].toString(),
             ownerId = row[Conversations.ownerId],
-            isPrivate = row[Conversations.isPrivate],
             companionId = row[Conversations.companionId],
             membersCount = row[Conversations.membersCount]
         )
