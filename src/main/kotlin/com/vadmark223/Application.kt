@@ -19,6 +19,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
+import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 
@@ -42,11 +43,12 @@ fun main() {
 
             val users = listOf(
                 User(1, "Vadim", "Markitanov"),
-                User(2, "Roman", "Imaletdinov"),
+                User(2, "Mikhail", "Trishakin"),
                 User(3, "German", "Doronin"),
                 User(4, "Andrey", "Golovnyov"),
                 User(5, "Evgeny", "Vasilyev"),
-                User(6, "Dmitry", "Kapustin")
+                User(6, "Dmitry", "Kapustin"),
+                User(7, "Roman", "Imaletdinov"),
             )
 
             Users.batchInsert(users) {
@@ -55,6 +57,9 @@ fun main() {
                 this[Users.lastName] = it.lastName
                 this[Users.online] = it.online
             }
+
+//            val count = ConversationsUsers.select { ConversationsUsers.conversationId eq 1L }.count()
+//            println("Count: $count")
         }
 
         install(Routing) {
