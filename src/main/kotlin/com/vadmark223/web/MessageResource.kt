@@ -15,6 +15,7 @@ import io.ktor.server.routing.*
 fun Route.message(service: MessageService) {
     route("/messages") {
         get {
+            println("Get all messages.")
             call.respond(service.getAll())
         }
 

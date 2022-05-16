@@ -69,6 +69,7 @@ class ConversationService {
                 it[name] = conversationDto.name
                 it[ownerId] = conversationDto.ownerId
                 it[companionId] = conversationDto.companionId
+//                it[messageId] = conversationDto.messageId
                 it[membersCount] = allIds.size
             }
 
@@ -113,6 +114,7 @@ class ConversationService {
             updateTime = row[Conversations.updateTime].toString(),
             ownerId = row[Conversations.ownerId],
             companionId = row[Conversations.companionId],
+            messageId = row[Conversations.messageId],
             membersCount = row[Conversations.membersCount]
         )
 
