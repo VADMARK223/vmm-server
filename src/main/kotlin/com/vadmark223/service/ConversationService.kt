@@ -29,11 +29,45 @@ class ConversationService {
         Conversations.selectAll().map { toConversation(it) }
     }
 
-    suspend fun selectConversationsByUserId(userId: Long): List<ConversationsUsersData> = dbQuery {
+    /*suspend fun selectConversationsByUserId(userId: Long): List<ConversationsUsersData> = dbQuery {
         ConversationsUsers.select {
             ConversationsUsers.userId eq userId
         }.map { toConversationsUsers(it) }
+    }*/
+
+    suspend fun selectConversationsByUserId(userId: Long): List<Conversation> {
+        val result = mutableListOf<Conversation>()
+        dbQuery {
+            ConversationsUsers
+                .innerJoin(Conversations, { conversationId }, { id })
+                .slice(Conversations.id)
+                .select {
+                    ConversationsUsers.userId.eq(userId)
+                }
+                .forEach {
+                    val conversationId = it[Conversations.id]
+                    println("Conversation id: $conversationId")
+                    Conversations
+                        .innerJoin(Users, { companionId }, { id })
+                        .innerJoin(Messages, { Conversations.messageId }, { id })
+                        .select {
+                            Conversations.id.eq(conversationId)
+                        }
+                        .forEach { res ->
+                            println("Result: ${res[Messages.text]}")
+                            result.add(toConversation(res))
+                        }
+                }
+        }
+
+        return result;
     }
+
+
+//        ConversationsUsers.select {
+//            ConversationsUsers.userId eq userId
+//        }.map { toConversationsUsers(it) }
+//    }
 
 //    suspend fun getById(id: Long): Conversation? = dbQuery {
 //        Messages.select {
@@ -116,6 +150,7 @@ class ConversationService {
             companionId = row[Conversations.companionId],
             messageId = row[Conversations.messageId],
             membersCount = row[Conversations.membersCount]
+//            messageText = row[Messages.text]
         )
 
     private fun toConversationsUsers(row: ResultRow): ConversationsUsersData =

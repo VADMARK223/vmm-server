@@ -37,4 +37,5 @@ data class Conversation(
     val companionId: Long?,
     val messageId: Long?,
     val membersCount: Int
+//    val messageText: String?
 )
