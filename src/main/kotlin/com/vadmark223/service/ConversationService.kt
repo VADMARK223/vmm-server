@@ -148,10 +148,10 @@ class ConversationService {
             ownerId = row[Conversations.ownerId],
             companionId = row[Conversations.companionId],
             messageId = row[Conversations.messageId],
-            messageText = row[Messages.text],
+            messageText = if (row.fieldIndex[Messages.text] == null) null else row[Messages.text],
             membersCount = row[Conversations.membersCount]
-//            messageText = row[Messages.text]
         )
+
 
     private fun toConversationsUsers(row: ResultRow): ConversationsUsersData =
         ConversationsUsersData(
