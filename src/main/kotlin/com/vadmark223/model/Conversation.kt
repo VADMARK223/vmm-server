@@ -36,5 +36,6 @@ data class Conversation(
     val ownerId: Long,
     val companionId: Long?,
     val membersCount: Int,
-    val lastMessage: Message?
+    val lastMessage: Message?,
+    val companion: User?
 )

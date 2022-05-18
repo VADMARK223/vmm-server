@@ -125,6 +125,7 @@ class ConversationService {
     }
 
     suspend fun delete(id: Long): Boolean {
+        println("Delete conversation: $id")
         var result = false
 
         dbQuery {
@@ -134,6 +135,8 @@ class ConversationService {
         if (result) {
             onChange(ChangeType.DELETE, id, listOf(1L))
         }
+
+        println("Delete conversation result: $result")
 
         return result
     }
@@ -147,10 +150,11 @@ class ConversationService {
             ownerId = row[Conversations.ownerId],
             companionId = row[Conversations.companionId],
             membersCount = row[Conversations.membersCount],
-            lastMessage = toMessage(row)
+            lastMessage = toMessage(row),
+            companion = toUser(row)
         )
 
-    private fun toMessage(row: ResultRow):Message? {
+    private fun toMessage(row: ResultRow): Message? {
         row.getOrNull(Messages.id) ?: return null
 
         return Message(
@@ -163,9 +167,16 @@ class ConversationService {
         )
     }
 
-    private fun toConversationsUsers(row: ResultRow): ConversationsUsersData =
-        ConversationsUsersData(
-            conversationId = row[ConversationsUsers.conversationId],
-            userId = row[ConversationsUsers.userId]
+    private fun toUser(row: ResultRow): User? {
+        row.getOrNull(Users.id) ?: return null
+
+        return User(
+            id = row[Users.id],
+            firstName = row[Users.firstName],
+            lastName = row[Users.lastName],
+            createTime = row[Users.createTime],
+            online = row[Users.online]
         )
+    }
+
 }

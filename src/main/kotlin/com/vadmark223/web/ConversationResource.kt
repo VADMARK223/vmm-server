@@ -85,7 +85,7 @@ fun Route.conversation(service: ConversationService) {
             println("Conversation error: ${e.localizedMessage}")
         } finally {
             println("Conversation disconnected userId: $userId.")
-            connections -= connection
+//            connections -= connection
 
 //            service.removeChangeListener(1/*this.hashCode()*/)
         }
