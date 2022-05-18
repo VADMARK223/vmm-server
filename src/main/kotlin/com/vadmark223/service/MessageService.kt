@@ -69,6 +69,4 @@ class MessageService {
             edited = row[Messages.edited],
             conversationId = row[Messages.conversationId]
         )
-
-
 }

@@ -53,7 +53,6 @@ class ConversationService {
                             Conversations.id.eq(conversationId)
                         }
                         .forEach { res ->
-                            println("Result: ${res[Messages.text]}")
                             result.add(toConversation(res))
                         }
                 }
@@ -147,11 +146,22 @@ class ConversationService {
             updateTime = row[Conversations.updateTime].toString(),
             ownerId = row[Conversations.ownerId],
             companionId = row[Conversations.companionId],
-            messageId = row[Conversations.messageId],
-            messageText = if (row.fieldIndex[Messages.text] == null) null else row[Messages.text],
-            membersCount = row[Conversations.membersCount]
+            membersCount = row[Conversations.membersCount],
+            lastMessage = toMessage(row)
         )
 
+    private fun toMessage(row: ResultRow):Message? {
+        row.getOrNull(Messages.id) ?: return null
+
+        return Message(
+            id = row[Messages.id],
+            text = row[Messages.text],
+            ownerId = row[Messages.ownerId],
+            createTime = row[Messages.createTime].toString(),
+            edited = row[Messages.edited],
+            conversationId = row[Messages.conversationId]
+        )
+    }
 
     private fun toConversationsUsers(row: ResultRow): ConversationsUsersData =
         ConversationsUsersData(

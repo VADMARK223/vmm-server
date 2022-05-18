@@ -35,8 +35,6 @@ data class Conversation(
     val updateTime: String,
     val ownerId: Long,
     val companionId: Long?,
-    val messageId: Long?,
-    val messageText: String?,
-    val membersCount: Int
-//    val messageText: String?
+    val membersCount: Int,
+    val lastMessage: Message?
 )
