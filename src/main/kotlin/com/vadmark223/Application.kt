@@ -21,6 +21,7 @@ import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import org.jetbrains.exposed.sql.innerJoin
+import org.jetbrains.exposed.sql.leftJoin
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
@@ -50,7 +51,7 @@ fun main() {
                     println("Result: ${it[Messages.text]}")
                 }*/
 
-            ConversationsUsers
+           /* ConversationsUsers
                 .innerJoin(Conversations, { conversationId }, { id })
                 .slice(Conversations.id)
                 .select {
@@ -60,15 +61,15 @@ fun main() {
                     val conversationId = it[Conversations.id]
                     println("Conversation id: $conversationId")
                     Conversations
-                        .innerJoin(Users, { companionId }, { id })
-                        .innerJoin(Messages, { Conversations.messageId }, { id })
+                        .leftJoin(Users, { companionId }, { id })
+                        .leftJoin(Messages, { Conversations.messageId }, { id })
                         .select {
                             Conversations.id.eq(conversationId)
                         }
                         .forEach {res ->
                             println("Result: ${res[Messages.text]}")
                         }
-                }
+                }*/
 
             /*SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)

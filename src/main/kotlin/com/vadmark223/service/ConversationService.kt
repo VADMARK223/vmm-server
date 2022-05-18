@@ -46,10 +46,9 @@ class ConversationService {
                 }
                 .forEach {
                     val conversationId = it[Conversations.id]
-                    println("Conversation id: $conversationId")
                     Conversations
-                        .innerJoin(Users, { companionId }, { id })
-                        .innerJoin(Messages, { Conversations.messageId }, { id })
+                        .leftJoin(Users, { companionId }, { id })
+                        .leftJoin(Messages, { Conversations.messageId }, { id })
                         .select {
                             Conversations.id.eq(conversationId)
                         }
