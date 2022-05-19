@@ -24,10 +24,11 @@ class ConversationService {
         id: Long,
         idsForSend: List<Long>,
         entity: Conversation? = null,
-        data: String? = null
+        messageText: String? = null,
+        message: Message? = null
     ) {
         listeners.values.forEach {
-            it.invoke(Notification(type, id, entity, data), idsForSend)
+            it.invoke(Notification(type, id, entity, messageText, message), idsForSend)
         }
     }
 
