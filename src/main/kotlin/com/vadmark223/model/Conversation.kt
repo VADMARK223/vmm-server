@@ -22,7 +22,7 @@ object Conversations : Table() {
     val ownerId = long("owner_id").references(Users.id, onDelete = ReferenceOption.CASCADE)
     val companionId = long("companion_id").nullable()
     val messageId = long("message_id").nullable()
-    val membersCount = integer("members_count")
+    val membersCount = integer("members_count").nullable()
 
     override val primaryKey = PrimaryKey(id)
 }
@@ -35,7 +35,7 @@ data class Conversation(
     val updateTime: String,
     val ownerId: Long,
     val companionId: Long?,
-    val membersCount: Int,
+    val membersCount: Int?,
     val lastMessage: Message?,
     val companion: User?
 )

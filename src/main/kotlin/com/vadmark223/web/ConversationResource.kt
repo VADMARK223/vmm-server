@@ -1,7 +1,6 @@
 package com.vadmark223.web
 
 import com.vadmark223.dto.ConversationDto
-import com.vadmark223.model.Conversation
 import com.vadmark223.service.ConversationService
 import io.ktor.server.application.*
 import io.ktor.server.request.*
@@ -43,7 +42,7 @@ fun Route.conversation(service: ConversationService) {
 
         put {
             val conversationDto = call.receive<ConversationDto>()
-            println("Conversation dto: $conversationDto")
+            println("Put conversation: $conversationDto")
             val newEntity = service.add(conversationDto)
             call.respond(newEntity)
         }
@@ -85,7 +84,7 @@ fun Route.conversation(service: ConversationService) {
             println("Conversation error: ${e.localizedMessage}")
         } finally {
             println("Conversation disconnected userId: $userId.")
-//            connections -= connection
+            connections -= connection
 
 //            service.removeChangeListener(1/*this.hashCode()*/)
         }

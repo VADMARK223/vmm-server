@@ -19,9 +19,15 @@ class ConversationService {
 
     fun removeChangeListener(id: Int) = listeners.remove(id)
 
-    private suspend fun onChange(type: ChangeType, id: Long, idsForSend: List<Long>, entity: Conversation? = null) {
+    private suspend fun onChange(
+        type: ChangeType,
+        id: Long,
+        idsForSend: List<Long>,
+        entity: Conversation? = null,
+        data: String? = null
+    ) {
         listeners.values.forEach {
-            it.invoke(Notification(type, id, entity), idsForSend)
+            it.invoke(Notification(type, id, entity, data), idsForSend)
         }
     }
 
@@ -133,7 +139,7 @@ class ConversationService {
         }
 
         if (result) {
-            onChange(ChangeType.DELETE, id, listOf(1L))
+            onChange(ChangeType.DELETE, id, listOf(1L)) // TODO: hard core!
         }
 
         println("Delete conversation result: $result")
@@ -177,6 +183,15 @@ class ConversationService {
             createTime = row[Users.createTime],
             online = row[Users.online]
         )
+    }
+
+    suspend fun addMessage(result: Message?) {
+        if (result == null) {
+            throw RuntimeException("Message is null.")
+        }
+
+        println("Add message for conversation: ${result.conversationId}!")
+        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, result.text)
     }
 
 }

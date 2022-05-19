@@ -1,20 +1,22 @@
 package com.vadmark223.service
 
 import com.vadmark223.dto.MessageDto
-import com.vadmark223.model.ChangeType
-import com.vadmark223.model.Conversations
 import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import kotlin.properties.Delegates
 
 /**
  * @author Markitanov Vadim
  * @since 03.05.2022
  */
-class MessageService {
+class MessageService(conversationService: ConversationService) {
+    private val conversationService: ConversationService
+    init {
+        this.conversationService = conversationService
+    }
+
     suspend fun getAll(): List<Message> = dbQuery {
         Messages.selectAll().map { toMessage(it) }
     }
@@ -43,7 +45,11 @@ class MessageService {
             newMessageId = newEntity[Messages.id]
         }
 
-        return getById(newMessageId)
+        val result = getById(newMessageId)
+
+        conversationService.addMessage(result)
+
+        return result
     }
 
     suspend fun delete(id: Long): Boolean {
