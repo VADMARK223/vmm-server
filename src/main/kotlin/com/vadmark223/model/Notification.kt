@@ -14,7 +14,6 @@ data class Notification<T>(
     val type: ChangeType,
     val id: Long,
     val entity: T,
-    val messageText: String? = null,
     val message: Message? = null
 )
 

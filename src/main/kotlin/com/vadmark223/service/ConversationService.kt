@@ -24,11 +24,10 @@ class ConversationService {
         id: Long,
         idsForSend: List<Long>,
         entity: Conversation? = null,
-        messageText: String? = null,
         message: Message? = null
     ) {
         listeners.values.forEach {
-            it.invoke(Notification(type, id, entity, messageText, message), idsForSend)
+            it.invoke(Notification(type, id, entity, message), idsForSend)
         }
     }
 
@@ -192,7 +191,7 @@ class ConversationService {
         }
 
         println("Add message for conversation: ${result.conversationId}!")
-        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, result.text)
+        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, message = result)
     }
 
 }
