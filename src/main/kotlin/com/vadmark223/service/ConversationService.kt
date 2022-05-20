@@ -191,7 +191,10 @@ class ConversationService {
         }
 
         println("Add message for conversation: ${result.conversationId}!")
-        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, message = result)
+        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, message = result) // TODO: idsForSend
     }
 
+    suspend fun removeMessage(message: Message) {
+        onChange(ChangeType.DELETE_MESSAGE, message.conversationId, listOf(1L), null, message = message) // TODO: idsForSend
+    }
 }

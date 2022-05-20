@@ -13,6 +13,7 @@ import kotlin.properties.Delegates
  */
 class MessageService(conversationService: ConversationService) {
     private val conversationService: ConversationService
+
     init {
         this.conversationService = conversationService
     }
@@ -56,12 +57,13 @@ class MessageService(conversationService: ConversationService) {
         var result = false
 
         dbQuery {
-            result = Messages.deleteWhere { Messages.id eq id } > 0
+            val messageForDelete = getById(id)
+            println("messageForDelete: $messageForDelete")
+            if (messageForDelete != null) {
+                result = Messages.deleteWhere { Messages.id eq messageForDelete.id } > 0
+                conversationService.removeMessage(messageForDelete)
+            }
         }
-
-//        if (result) {
-//            onChange(ChangeType.DELETE, id)
-//        }
 
         return result
     }
