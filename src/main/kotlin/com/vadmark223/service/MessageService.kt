@@ -1,12 +1,11 @@
 package com.vadmark223.service
 
 import com.vadmark223.dto.MessageDto
-import com.vadmark223.model.ConversationsUsers
-import com.vadmark223.model.Message
-import com.vadmark223.model.Messages
+import com.vadmark223.model.*
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import org.jetbrains.exposed.sql.*
 import kotlin.properties.Delegates
+import kotlin.random.Random
 
 /**
  * @author Markitanov Vadim
@@ -51,6 +50,12 @@ class MessageService(conversationService: ConversationService) {
 
         if (result != null) {
             dbQuery {
+                println("newMessageId: $newMessageId")
+
+                Conversations.update({ Conversations.id eq result.conversationId }) {
+                    it[messageId] = result.id
+                }
+
                 val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq result.conversationId }
                     .map { it[ConversationsUsers.userId] }
                 conversationService.addMessage(result, userIds)
