@@ -185,16 +185,16 @@ class ConversationService {
         )
     }
 
-    suspend fun addMessage(result: Message?) {
+    suspend fun addMessage(result: Message?, idsForSend: List<Long>) {
         if (result == null) {
             throw RuntimeException("Message is null.")
         }
 
         println("Add message for conversation: ${result.conversationId}!")
-        onChange(ChangeType.ADD_MESSAGE, result.conversationId, listOf(1L), null, message = result) // TODO: idsForSend
+        onChange(ChangeType.ADD_MESSAGE, result.conversationId, idsForSend, null, message = result)
     }
 
-    suspend fun removeMessage(message: Message) {
-        onChange(ChangeType.DELETE_MESSAGE, message.conversationId, listOf(1L), null, message = message) // TODO: idsForSend
+    suspend fun removeMessage(message: Message, idsForSend: List<Long>) {
+        onChange(ChangeType.DELETE_MESSAGE, message.conversationId, idsForSend, null, message = message) // TODO: idsForSend
     }
 }

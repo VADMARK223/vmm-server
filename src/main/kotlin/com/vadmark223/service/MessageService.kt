@@ -1,6 +1,7 @@
 package com.vadmark223.service
 
 import com.vadmark223.dto.MessageDto
+import com.vadmark223.model.ConversationsUsers
 import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
@@ -48,7 +49,13 @@ class MessageService(conversationService: ConversationService) {
 
         val result = getById(newMessageId)
 
-        conversationService.addMessage(result)
+        if (result != null) {
+            dbQuery {
+                val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq result.conversationId }
+                    .map { it[ConversationsUsers.userId] }
+                conversationService.addMessage(result, userIds)
+            }
+        }
 
         return result
     }
@@ -61,7 +68,9 @@ class MessageService(conversationService: ConversationService) {
             println("messageForDelete: $messageForDelete")
             if (messageForDelete != null) {
                 result = Messages.deleteWhere { Messages.id eq messageForDelete.id } > 0
-                conversationService.removeMessage(messageForDelete)
+                val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq messageForDelete.conversationId }
+                    .map { it[ConversationsUsers.userId] }
+                conversationService.removeMessage(messageForDelete, userIds)
             }
         }
 
