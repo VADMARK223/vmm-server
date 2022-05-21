@@ -1,5 +1,6 @@
 package com.vadmark223
 
+import com.vadmark223.dto.MessageDto
 import com.vadmark223.model.*
 import com.vadmark223.plugins.configureSerialization
 import com.vadmark223.plugins.configureSockets
@@ -17,6 +18,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.insert
@@ -36,6 +39,9 @@ fun main() {
         configureSerialization()
 
         DatabaseFactory.connect()
+
+        val conversationService = ConversationService()
+        val messageService = MessageService(conversationService)
 
         transaction {
             SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
@@ -58,22 +64,30 @@ fun main() {
                 this[Users.online] = it.online
             }
 
-            Conversations.insert {
-                it[name] = "Conv default"
+            val insertResult = Conversations.insert {
+                it[name] = "Conversation default"
                 it[ownerId] = 1L
                 it[companionId] = 2L
             }
 
+            val newConversationId = insertResult.resultedValues?.first()?.get(Conversations.id) as Long
+
+            println("newConversationId: $newConversationId")
+
             ConversationsUsers.insert {
-                it[conversationId] = 1
-                it[userId] = 1
+                it[conversationId] = newConversationId
+                it[userId] = 1L
             }
 
             ConversationsUsers.insert {
-                it[conversationId] = 1
-                it[userId] = 2
+                it[conversationId] = newConversationId
+                it[userId] = 2L
             }
 
+            launch {
+                messageService.add(MessageDto("From owner", newConversationId, 1L))
+                messageService.add(MessageDto("From companion", newConversationId, 2L))
+            }
 
             /*Conversations
                 .innerJoin(Users, { companionId }, { id })
@@ -111,11 +125,11 @@ fun main() {
 //            println("Count: $count")
         }
 
-        val conversationService = ConversationService()
+
         install(Routing) {
             user(UserService())
             conversation(conversationService)
-            message(MessageService(conversationService))
+            message(messageService)
         }
         configureSockets()
 
