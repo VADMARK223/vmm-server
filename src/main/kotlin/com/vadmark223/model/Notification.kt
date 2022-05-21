@@ -5,7 +5,7 @@ package com.vadmark223.model
  * @since 06.05.2022
  */
 
-enum class ChangeType { CREATE, UPDATE, DELETE, ADD_MESSAGE, DELETE_MESSAGE }
+enum class ChangeType { CREATE, UPDATE, DELETE, ADD_MESSAGE, DELETE_MESSAGE, UPDATE_LAST_MESSAGE }
 
 @kotlinx.serialization.Serializable
 data class Notification<T>(

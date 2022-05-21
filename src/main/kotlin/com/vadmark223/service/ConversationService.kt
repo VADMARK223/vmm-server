@@ -197,4 +197,9 @@ class ConversationService {
     suspend fun removeMessage(message: Message, idsForSend: List<Long>) {
         onChange(ChangeType.DELETE_MESSAGE, message.conversationId, idsForSend, null, message = message) // TODO: idsForSend
     }
+
+    suspend fun updateLastMessage(conversationId: Long, result: Message?, idsForSend: List<Long>) {
+        println("Update last message for conversation: ${conversationId}!")
+        onChange(ChangeType.UPDATE_LAST_MESSAGE, conversationId, idsForSend, null, message = result)
+    }
 }
