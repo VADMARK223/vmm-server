@@ -17,8 +17,6 @@ class ConversationService {
         listeners[id] = listener
     }
 
-    fun removeChangeListener(id: Int) = listeners.remove(id)
-
     private suspend fun onChange(
         type: ChangeType,
         id: Long,
@@ -64,25 +62,7 @@ class ConversationService {
                 }
         }
 
-        return result;
-    }
-
-
-//        ConversationsUsers.select {
-//            ConversationsUsers.userId eq userId
-//        }.map { toConversationsUsers(it) }
-//    }
-
-//    suspend fun getById(id: Long): Conversation? = dbQuery {
-//        Messages.select {
-//            Messages.id eq id
-//        }.map { toConversation(it) }.singleOrNull()
-//    }
-
-    suspend fun getById(id: Long): Conversation? = dbQuery {
-        Conversations.select {
-            Conversations.id eq id
-        }.map { toConversation(it) }.singleOrNull()
+        return result
     }
 
     suspend fun update(id: Long) {
@@ -99,19 +79,25 @@ class ConversationService {
         println("Add conversation dto: $conversationDto")
         lateinit var result: Conversation
         dbQuery {
-
             val allIds = mutableListOf(conversationDto.ownerId)
             allIds.addAll(conversationDto.memberIds)
 
-            val new = Conversations.insert {
-                it[name] = conversationDto.name
+            var companion: ResultRow? = null
+            if (conversationDto.companionId != null) {
+                companion = Users.select { Users.id eq conversationDto.companionId }.singleOrNull()
+            }
+
+            val companionName =
+                if (companion == null) null else companion[Users.firstName] + " " + companion[Users.lastName]
+
+            val insertedConversation = Conversations.insert {
+                it[name] = companionName ?: conversationDto.name
                 it[ownerId] = conversationDto.ownerId
                 it[companionId] = conversationDto.companionId
-//                it[messageId] = conversationDto.messageId
                 it[membersCount] = allIds.size
             }
 
-            val rowResult = new.resultedValues?.first()
+            val rowResult = insertedConversation.resultedValues?.first()
 
             val newConversationId = rowResult?.get(Conversations.id) as Long
             println("newConversationId: $newConversationId")
@@ -195,7 +181,13 @@ class ConversationService {
     }
 
     suspend fun removeMessage(message: Message, idsForSend: List<Long>) {
-        onChange(ChangeType.DELETE_MESSAGE, message.conversationId, idsForSend, null, message = message) // TODO: idsForSend
+        onChange(
+            ChangeType.DELETE_MESSAGE,
+            message.conversationId,
+            idsForSend,
+            null,
+            message = message
+        ) // TODO: idsForSend
     }
 
     suspend fun updateLastMessage(conversationId: Long, result: Message?, idsForSend: List<Long>) {

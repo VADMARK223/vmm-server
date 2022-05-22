@@ -1,5 +1,6 @@
 package com.vadmark223
 
+import com.vadmark223.dto.ConversationDto
 import com.vadmark223.dto.MessageDto
 import com.vadmark223.model.*
 import com.vadmark223.plugins.configureSerialization
@@ -18,7 +19,6 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
@@ -64,7 +64,7 @@ fun main() {
                 this[Users.online] = it.online
             }
 
-            val insertResult = Conversations.insert {
+           /* val insertResult = Conversations.insert {
                 it[name] = "Conversation default"
                 it[ownerId] = 1L
                 it[companionId] = 2L
@@ -82,11 +82,36 @@ fun main() {
             ConversationsUsers.insert {
                 it[conversationId] = newConversationId
                 it[userId] = 2L
-            }
+            }*/
 
-            launch {
+            /*launch {
                 messageService.add(MessageDto("From owner", newConversationId, 1L))
                 messageService.add(MessageDto("From companion", newConversationId, 2L))
+            }*/
+
+            launch {
+                val privateCompanionId = 2L
+                val privateConversation =
+                    conversationService.add(
+                        ConversationDto(
+                            "Private",
+                            1L,
+                            listOf(privateCompanionId),
+                            companionId = privateCompanionId
+                        )
+                    )
+                messageService.add(
+                    MessageDto(
+                        "Private from owner",
+                        privateConversation.id,
+                        privateConversation.ownerId
+                    )
+                )
+                messageService.add(MessageDto("Private from companion", privateConversation.id, privateCompanionId))
+
+                // Common
+                val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
+                messageService.add(MessageDto("Common from owner", commonConversation.id, commonConversation.ownerId))
             }
 
             /*Conversations

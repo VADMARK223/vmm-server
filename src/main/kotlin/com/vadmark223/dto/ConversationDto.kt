@@ -8,5 +8,4 @@ data class ConversationDto(
     val ownerId: Long,
     val memberIds: List<Long>,
     val companionId: Long? = null
-//    val messageId: Long? = null
 )
