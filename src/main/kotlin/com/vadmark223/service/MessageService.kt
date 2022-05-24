@@ -47,6 +47,7 @@ class MessageService(conversationService: ConversationService) {
                 it[ownerId] = messageDto.ownerId
                 it[conversationId] = messageDto.conversationId
                 it[createTime] = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                it[edited] = messageDto.edited
             }
 
             newMessageId = newEntity[Messages.id]

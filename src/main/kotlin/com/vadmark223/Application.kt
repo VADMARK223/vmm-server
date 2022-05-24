@@ -49,12 +49,13 @@ fun main() {
 
             val users = listOf(
                 User(1, "Vadim", "Markitanov"),
-                User(2, "Mikhail", "Trishakin"),
+                User(2, "Vetochka", "Mgebri"),
                 User(3, "German", "Doronin"),
                 User(4, "Andrey", "Golovnyov"),
                 User(5, "Evgeny", "Vasilyev"),
                 User(6, "Dmitry", "Kapustin"),
                 User(7, "Roman", "Imaletdinov"),
+                User(8, "Mikhail", "Trishakin")
             )
 
             Users.batchInsert(users) {
@@ -63,31 +64,6 @@ fun main() {
                 this[Users.lastName] = it.lastName
                 this[Users.online] = it.online
             }
-
-           /* val insertResult = Conversations.insert {
-                it[name] = "Conversation default"
-                it[ownerId] = 1L
-                it[companionId] = 2L
-            }
-
-            val newConversationId = insertResult.resultedValues?.first()?.get(Conversations.id) as Long
-
-            println("newConversationId: $newConversationId")
-
-            ConversationsUsers.insert {
-                it[conversationId] = newConversationId
-                it[userId] = 1L
-            }
-
-            ConversationsUsers.insert {
-                it[conversationId] = newConversationId
-                it[userId] = 2L
-            }*/
-
-            /*launch {
-                messageService.add(MessageDto("From owner", newConversationId, 1L))
-                messageService.add(MessageDto("From companion", newConversationId, 2L))
-            }*/
 
             launch {
                 val privateCompanionId = 2L
@@ -107,49 +83,13 @@ fun main() {
                         privateConversation.ownerId
                     )
                 )
-                messageService.add(MessageDto("Private from companion", privateConversation.id, privateCompanionId))
+                messageService.add(MessageDto("Private from companion", privateConversation.id, privateCompanionId, true))
 
                 // Common
                 val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
                 messageService.add(MessageDto("Common from owner", commonConversation.id, commonConversation.ownerId))
             }
-
-            /*Conversations
-                .innerJoin(Users, { companionId }, { id })
-                .innerJoin(Messages, { Conversations.messageId }, { id })
-                .select {
-                    Conversations.id.eq(3)
-                }
-                .forEach {
-                    println("Result: ${it[Messages.text]}")
-                }*/
-
-            /* ConversationsUsers
-                 .innerJoin(Conversations, { conversationId }, { id })
-                 .slice(Conversations.id)
-                 .select {
-                     ConversationsUsers.userId.eq(1)
-                 }
-                 .forEach {
-                     val conversationId = it[Conversations.id]
-                     println("Conversation id: $conversationId")
-                     Conversations
-                         .leftJoin(Users, { companionId }, { id })
-                         .leftJoin(Messages, { Conversations.messageId }, { id })
-                         .select {
-                             Conversations.id.eq(conversationId)
-                         }
-                         .forEach {res ->
-                             println("Result: ${res[Messages.text]}")
-                         }
-                 }*/
-
-            /**/
-
-//            val count = ConversationsUsers.select { ConversationsUsers.conversationId eq 1L }.count()
-//            println("Count: $count")
         }
-
 
         install(Routing) {
             user(UserService())
