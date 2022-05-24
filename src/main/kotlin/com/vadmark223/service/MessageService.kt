@@ -46,7 +46,7 @@ class MessageService(conversationService: ConversationService) {
                 it[text] = messageDto.text
                 it[ownerId] = messageDto.ownerId
                 it[conversationId] = messageDto.conversationId
-                it[createTime] = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                it[createTime] = messageDto.createTime
                 it[edited] = messageDto.edited
             }
 

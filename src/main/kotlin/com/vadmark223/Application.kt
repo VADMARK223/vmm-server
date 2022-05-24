@@ -22,9 +22,9 @@ import io.ktor.server.websocket.*
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
+import kotlinx.datetime.LocalDateTime
 
 fun main() {
     embeddedServer(Netty, port = 8888, host = "localhost") {
@@ -78,16 +78,54 @@ fun main() {
                     )
                 messageService.add(
                     MessageDto(
-                        "Private from owner",
-                        privateConversation.id,
-                        privateConversation.ownerId
+                        text = "From: owner, january: 1,  message: 1",
+                        conversationId = privateConversation.id,
+                        ownerId = privateConversation.ownerId,
+                        createTime = LocalDateTime(2022, 1, 1, 16, 57, 0, 0)
                     )
                 )
-                messageService.add(MessageDto("Private from companion", privateConversation.id, privateCompanionId, true))
+                messageService.add(
+                    MessageDto(
+                        text = "From: owner, january: 1,  message: 2",
+                        conversationId = privateConversation.id,
+                        ownerId = privateConversation.ownerId,
+                        createTime = LocalDateTime(2022, 1, 1, 17, 57, 0, 0)
+                    )
+                )
+                messageService.add(
+                    MessageDto(
+                        text = "From: owner, january: 1,  message: 3",
+                        conversationId = privateConversation.id,
+                        ownerId = privateConversation.ownerId,
+                        createTime = LocalDateTime(2022, 1, 1, 18, 57, 0, 0)
+                    )
+                )
+                messageService.add(
+                    MessageDto(
+                        text = "From: owner, january: 2,  message: 1",
+                        conversationId = privateConversation.id,
+                        ownerId = privateConversation.ownerId,
+                        createTime = LocalDateTime(2022, 1, 2, 13, 57, 0, 0)
+                    )
+                )
+                messageService.add(
+                    MessageDto(
+                        text = "Private from companion",
+                        conversationId = privateConversation.id,
+                        ownerId = privateCompanionId,
+                        edited = true
+                    )
+                )
 
                 // Common
                 val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
-                messageService.add(MessageDto("Common from owner", commonConversation.id, commonConversation.ownerId))
+                messageService.add(
+                    MessageDto(
+                        text = "Common from owner",
+                        conversationId = commonConversation.id,
+                        ownerId = commonConversation.ownerId
+                    )
+                )
             }
         }
 
