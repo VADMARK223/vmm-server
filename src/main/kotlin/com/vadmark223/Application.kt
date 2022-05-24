@@ -66,6 +66,16 @@ fun main() {
             }
 
             launch {
+                // Common
+                val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
+                messageService.add(
+                    MessageDto(
+                        text = "Common from owner",
+                        conversationId = commonConversation.id,
+                        ownerId = commonConversation.ownerId
+                    )
+                )
+
                 val privateCompanionId = 2L
                 val privateConversation =
                     conversationService.add(
@@ -114,16 +124,6 @@ fun main() {
                         conversationId = privateConversation.id,
                         ownerId = privateCompanionId,
                         edited = true
-                    )
-                )
-
-                // Common
-                val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
-                messageService.add(
-                    MessageDto(
-                        text = "Common from owner",
-                        conversationId = commonConversation.id,
-                        ownerId = commonConversation.ownerId
                     )
                 )
             }

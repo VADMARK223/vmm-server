@@ -57,10 +57,9 @@ class MessageService(conversationService: ConversationService) {
 
         if (result != null) {
             dbQuery {
-                println("newMessageId: $newMessageId")
-
                 Conversations.update({ Conversations.id eq result.conversationId }) {
                     it[messageId] = result.id
+                    it[updateTime] = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
                 }
 
                 val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq result.conversationId }
@@ -94,6 +93,7 @@ class MessageService(conversationService: ConversationService) {
 
                 Conversations.update({ Conversations.id eq messageForDelete.conversationId }) {
                     it[messageId] = if (lastMessage != null) lastMessage[Messages.id] else null
+                    it[updateTime] = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
                 }
 
                 conversationService.removeMessage(messageForDelete, userIds)

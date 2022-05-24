@@ -33,12 +33,6 @@ class ConversationService {
         Conversations.selectAll().map { toConversation(it) }
     }
 
-    /*suspend fun selectConversationsByUserId(userId: Long): List<ConversationsUsersData> = dbQuery {
-        ConversationsUsers.select {
-            ConversationsUsers.userId eq userId
-        }.map { toConversationsUsers(it) }
-    }*/
-
     suspend fun selectConversationsByUserId(userId: Long): List<Conversation> {
         val result = mutableListOf<Conversation>()
         dbQuery {
@@ -48,6 +42,7 @@ class ConversationService {
                 .select {
                     ConversationsUsers.userId.eq(userId)
                 }
+                .orderBy(Conversations.updateTime, SortOrder.DESC)
                 .forEach {
                     val conversationId = it[Conversations.id]
                     Conversations
@@ -56,6 +51,7 @@ class ConversationService {
                         .select {
                             Conversations.id.eq(conversationId)
                         }
+
                         .forEach { res ->
                             result.add(toConversation(res))
                         }
