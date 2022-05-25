@@ -44,8 +44,8 @@ fun main() {
         val messageService = MessageService(conversationService)
 
         transaction {
-            SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
-            SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
+            SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages, Images)
+            SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages, Images)
 
             val users = listOf(
                 User(1, "Vadim", "Markitanov"),

@@ -3,6 +3,7 @@ package com.vadmark223.web
 import com.vadmark223.service.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
@@ -23,6 +24,13 @@ fun Route.user(service: UserService) {
             val id = call.parameters["id"]?.toLong() ?: throw IllegalStateException("Must provide id")
             val user = service.getById(id)
             if (user == null) call.respond(HttpStatusCode.NotFound) else call.respond(user)
+        }
+
+        post {
+            val image = call.receive<Image>()
+            println("IMage: $image")
+            service.update(image)
+            call.respond(true)
         }
     }
 
