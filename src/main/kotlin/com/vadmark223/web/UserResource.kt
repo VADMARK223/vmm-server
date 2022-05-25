@@ -1,5 +1,6 @@
 package com.vadmark223.web
 
+import com.vadmark223.dto.UserDto
 import com.vadmark223.service.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -27,7 +28,7 @@ fun Route.user(service: UserService) {
         }
 
         post {
-            val image = call.receive<Image>()
+            val image = call.receive<UserDto>()
             println("IMage: $image")
             service.update(image)
             call.respond(true)

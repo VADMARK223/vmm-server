@@ -1,12 +1,9 @@
 package com.vadmark223.service
 
+import com.vadmark223.dto.UserDto
 import com.vadmark223.model.*
 import com.vadmark223.service.DatabaseFactory.dbQuery
-import com.vadmark223.web.Image
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-import java.sql.Blob
-import javax.sql.rowset.serial.SerialBlob
 
 /**
  * @author Markitanov Vadim
@@ -31,7 +28,8 @@ class UserService {
             firstName = row[Users.firstName],
             lastName = row[Users.lastName],
             createTime = row[Users.createTime],
-            online = row[Users.online]
+            online = row[Users.online],
+            image = row[Users.image]
         )
 
     fun notificationListener(listener: suspend (UserNotification) -> Unit) {
@@ -60,13 +58,26 @@ class UserService {
         }
     }
 
-    suspend fun update(imageDto: Image) {
+    suspend fun update(userDto: UserDto) {
         println("USER UPDATE")
         dbQuery {
-//            val temp = SerialBlob(imageDto.image)
+            Users.update({ Users.id eq userDto.id }) {
+                it[image] = userDto.image
+            }
+
+            /*val user = getById(userDto.id)
+
+            if (user != null) {
+                Users.update {
+
+                }
+            }*/
+
+
+
             Images.insert {
-                it[text] = imageDto.text
-                it[img] = imageDto.image
+                it[text] = userDto.text
+                it[img] = userDto.image
             }
         }
     }

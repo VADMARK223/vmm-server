@@ -7,6 +7,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
+import java.awt.Image
 import kotlin.random.Random
 
 /**
@@ -20,6 +21,7 @@ object Users : Table() {
     val createTime =
         datetime("create_time").default(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     val online = bool("online").default(false)
+    val image = binary("image").nullable()
     override val primaryKey = PrimaryKey(id)
 }
 
@@ -29,5 +31,6 @@ data class User(
     val firstName: String,
     val lastName: String,
     val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-    val online: Boolean = false
+    val online: Boolean = false,
+    val image: ByteArray? = null
 )
