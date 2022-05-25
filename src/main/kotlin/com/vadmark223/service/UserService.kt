@@ -64,21 +64,6 @@ class UserService {
             Users.update({ Users.id eq userDto.id }) {
                 it[image] = userDto.image
             }
-
-            /*val user = getById(userDto.id)
-
-            if (user != null) {
-                Users.update {
-
-                }
-            }*/
-
-
-
-            Images.insert {
-                it[text] = userDto.text
-                it[img] = userDto.image
-            }
         }
     }
 }

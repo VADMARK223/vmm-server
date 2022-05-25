@@ -7,7 +7,6 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.kotlin.datetime.datetime
-import java.awt.Image
 import kotlin.random.Random
 
 /**

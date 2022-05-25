@@ -11,4 +11,8 @@ data class UserDto(
     val id: Long,
     val text: String,
     val image: ByteArray
-)
+){
+    override fun toString(): String {
+        return "Id: " + this.id.toString()
+    }
+}
