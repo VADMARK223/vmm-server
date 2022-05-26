@@ -71,6 +71,15 @@ class ConversationService {
         }
     }
 
+    /*fun updateName(resultRow: ResultRow) {
+        val con = toConversation(resultRow)
+        println("CON: $con")
+    }*/
+
+    fun updateName(conversations: Conversations) {
+        println("COn: $conversations")
+    }
+
     suspend fun add(conversationDto: ConversationDto): Conversation {
         println("Add conversation dto: $conversationDto")
         lateinit var result: Conversation
@@ -189,5 +198,10 @@ class ConversationService {
     suspend fun updateLastMessage(conversationId: Long, result: Message?, idsForSend: List<Long>) {
         println("Update last message for conversation: ${conversationId}!")
         onChange(ChangeType.UPDATE_LAST_MESSAGE, conversationId, idsForSend, null, message = result)
+    }
+
+    suspend fun update(row: ResultRow) {
+        val conv = toConversation(row)
+        onChange(ChangeType.UPDATE, row[Conversations.id], listOf(1L), conv) // TODO: HARDCORE
     }
 }

@@ -28,9 +28,9 @@ fun Route.user(service: UserService) {
         }
 
         post {
-            val image = call.receive<UserDto>()
-            println("IMage: $image")
-            service.update(image)
+            val userDto = call.receive<UserDto>()
+            println("Post user dto: $userDto")
+            service.update(userDto)
             call.respond(true)
         }
     }

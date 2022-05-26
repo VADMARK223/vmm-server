@@ -9,9 +9,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserDto(
     val id: Long,
-    val text: String,
-    val image: ByteArray
-){
+    val firstName: String,
+    val lastName: String,
+    val image: ByteArray? = null
+) {
     override fun toString(): String {
         return "Id: " + this.id.toString()
     }

@@ -41,6 +41,7 @@ fun main() {
         DatabaseFactory.connect()
 
         val conversationService = ConversationService()
+        val userService = UserService(conversationService)
         val messageService = MessageService(conversationService)
 
         transaction {
@@ -130,7 +131,7 @@ fun main() {
         }
 
         install(Routing) {
-            user(UserService())
+            user(userService)
             conversation(conversationService)
             message(messageService)
         }

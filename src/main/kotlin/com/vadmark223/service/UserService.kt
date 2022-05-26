@@ -9,7 +9,13 @@ import org.jetbrains.exposed.sql.*
  * @author Markitanov Vadim
  * @since 03.05.2022
  */
-class UserService {
+class UserService(conversationService: ConversationService) {
+    private val conversationService: ConversationService
+
+    init {
+        this.conversationService = conversationService
+    }
+
     private lateinit var listener: suspend (UserNotification) -> Unit
 
     suspend fun getAll(): List<User> = dbQuery {
@@ -40,15 +46,9 @@ class UserService {
         println("Change online for user: $userId value: $value")
 
         dbQuery {
-            /*val updatedCount = */Users.update({ Users.id eq userId }) {
-            it[online] = value
-        }
-
-//            if (updatedCount != 0) {
-//                val userUpdated = getById(userId)
-//                println("userUpdated: $userUpdated")
-
-//            }
+            Users.update({ Users.id eq userId }) {
+                it[online] = value
+            }
         }
 
         dbQuery {
@@ -59,10 +59,23 @@ class UserService {
     }
 
     suspend fun update(userDto: UserDto) {
-        println("USER UPDATE")
         dbQuery {
             Users.update({ Users.id eq userDto.id }) {
+                it[firstName] = userDto.firstName
+                it[lastName] = userDto.lastName
                 it[image] = userDto.image
+            }
+
+            val result = Conversations.update({ Conversations.companionId eq userDto.id }) {
+                it[name] = "${userDto.firstName} ${userDto.lastName}"
+            }
+
+            if (result != 0) {
+                Conversations.select {
+                    Conversations.companionId eq userDto.id
+                }.forEach {
+                    conversationService.update(it)
+                }
             }
         }
     }
