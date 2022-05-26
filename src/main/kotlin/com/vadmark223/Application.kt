@@ -77,6 +77,16 @@ fun main() {
                     )
                 )
 
+                val commonConversation1 = conversationService.add(ConversationDto("co mm on1", 1L, listOf(2L, 3L)))
+                messageService.add(
+                    MessageDto(
+                        text = "Common1 from owner",
+                        conversationId = commonConversation1.id,
+                        ownerId = commonConversation1.ownerId
+                    )
+                )
+
+                // Private
                 val privateCompanionId = 2L
                 val privateConversation =
                     conversationService.add(
