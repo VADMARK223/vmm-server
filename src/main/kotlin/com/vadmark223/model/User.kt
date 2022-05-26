@@ -32,4 +32,8 @@ data class User(
     val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val online: Boolean = false,
     val image: ByteArray? = null
-)
+) {
+    override fun toString(): String {
+        return this.firstName
+    }
+}
