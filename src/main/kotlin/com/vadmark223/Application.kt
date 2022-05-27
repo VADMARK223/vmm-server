@@ -1,7 +1,6 @@
 package com.vadmark223
 
 import com.vadmark223.dto.ConversationDto
-import com.vadmark223.dto.MessageDto
 import com.vadmark223.model.*
 import com.vadmark223.plugins.configureSerialization
 import com.vadmark223.plugins.configureSockets
@@ -19,14 +18,13 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.transactions.transaction
-import java.time.Duration
-import kotlinx.datetime.LocalDateTime
 import java.io.File
+import java.time.Duration
 
 fun main() {
     embeddedServer(Netty, port = 8888, host = "localhost") {
@@ -52,10 +50,10 @@ fun main() {
 
             val users = listOf(
                 User(firstName = "Вадим", lastName = "Маркитанов", image = getImageByName("v_markitanov.jpg")),
+                User(firstName = "Евгений", lastName = "Васильев", image = getImageByName("e_vasilyev.jpg")),
                 User(firstName = "Герман", lastName = "Доронин", image = getImageByName("g_doronin.jpg")),
                 User(firstName = "Vetochka", lastName = "Mgebri"),
                 User(firstName = "Andrey", lastName = "Golovnyov"),
-                User(firstName = "Evgeny", lastName = "Vasilyev"),
                 User(firstName = "Dmitry", lastName = "Kapustin"),
                 User(firstName = "Roman", lastName = "Imaletdinov"),
                 User(firstName = "Mikhail", lastName = "Trishakin")
@@ -72,20 +70,17 @@ fun main() {
                 // Common
                 val commonConversation = conversationService.add(ConversationDto("Групповой чат", 1L, listOf(2L, 3L)))
                 messageService.add(
-                    MessageDto(
-                        text = "Common from owner",
-                        conversationId = commonConversation.id,
-                        ownerId = commonConversation.ownerId
-                    )
+                    text = "Common from owner",
+                    conversationId = commonConversation.id,
+                    ownerId = commonConversation.ownerId
                 )
 
-                val commonConversation1 = conversationService.add(ConversationDto("Второй группой чат", 1L, listOf(2L, 3L)))
+                val commonConversation1 =
+                    conversationService.add(ConversationDto("Второй группой чат", 1L, listOf(2L, 3L)))
                 messageService.add(
-                    MessageDto(
-                        text = "Сообщение от владельца",
-                        conversationId = commonConversation1.id,
-                        ownerId = commonConversation1.ownerId
-                    )
+                    text = "Сообщение от владельца",
+                    conversationId = commonConversation1.id,
+                    ownerId = commonConversation1.ownerId
                 )
 
                 // Private
@@ -100,44 +95,34 @@ fun main() {
                         )
                     )
                 messageService.add(
-                    MessageDto(
-                        text = "Первое сообщение первого января",
-                        conversationId = privateConversation.id,
-                        ownerId = privateConversation.ownerId,
-                        createTime = LocalDateTime(2022, 1, 1, 16, 57, 0, 0)
-                    )
+                    text = "Первое сообщение первого января",
+                    conversationId = privateConversation.id,
+                    ownerId = privateConversation.ownerId,
+                    createTime = LocalDateTime(2022, 1, 1, 16, 57, 0, 0)
                 )
                 messageService.add(
-                    MessageDto(
-                        text = "Второе сообщение первого января",
-                        conversationId = privateConversation.id,
-                        ownerId = privateConversation.ownerId,
-                        createTime = LocalDateTime(2022, 1, 1, 17, 57, 0, 0)
-                    )
+                    text = "Второе сообщение первого января",
+                    conversationId = privateConversation.id,
+                    ownerId = privateConversation.ownerId,
+                    createTime = LocalDateTime(2022, 1, 1, 17, 57, 0, 0)
                 )
                 messageService.add(
-                    MessageDto(
-                        text = "Третье сообщение первого января",
-                        conversationId = privateConversation.id,
-                        ownerId = privateConversation.ownerId,
-                        createTime = LocalDateTime(2022, 1, 1, 18, 57, 0, 0)
-                    )
+                    text = "Третье сообщение первого января",
+                    conversationId = privateConversation.id,
+                    ownerId = privateConversation.ownerId,
+                    createTime = LocalDateTime(2022, 1, 1, 18, 57, 0, 0)
                 )
                 messageService.add(
-                    MessageDto(
-                        text = "Первое сообщение второго января",
-                        conversationId = privateConversation.id,
-                        ownerId = privateConversation.ownerId,
-                        createTime = LocalDateTime(2022, 1, 2, 13, 57, 0, 0)
-                    )
+                    text = "Первое сообщение второго января",
+                    conversationId = privateConversation.id,
+                    ownerId = privateConversation.ownerId,
+                    createTime = LocalDateTime(2022, 1, 2, 13, 57, 0, 0)
                 )
                 messageService.add(
-                    MessageDto(
-                        text = "Последнее сообщение сегодня",
-                        conversationId = privateConversation.id,
-                        ownerId = privateCompanionId,
-                        edited = true
-                    )
+                    text = "Последнее сообщение сегодня",
+                    conversationId = privateConversation.id,
+                    ownerId = privateCompanionId,
+                    edited = true
                 )
             }
         }

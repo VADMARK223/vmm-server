@@ -7,6 +7,7 @@ import com.vadmark223.model.Message
 import com.vadmark223.model.Messages
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
@@ -37,6 +38,24 @@ class MessageService(conversationService: ConversationService) {
         Messages.select {
             Messages.conversationId eq id
         }.map { toMessage(it) }
+    }
+
+    suspend fun add(
+        text: String,
+        ownerId: Long,
+        createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+        edited: Boolean = false,
+        conversationId: Long
+    ) {
+        this.add(
+            MessageDto(
+                text = text,
+                ownerId = ownerId,
+                createTime = createTime,
+                edited = edited,
+                conversationId = conversationId
+            )
+        )
     }
 
     suspend fun add(messageDto: MessageDto): Message? {
