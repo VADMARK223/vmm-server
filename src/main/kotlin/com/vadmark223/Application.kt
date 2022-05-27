@@ -51,9 +51,9 @@ fun main() {
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
 
             val users = listOf(
-                User(firstName = "Vadim", lastName = "Markitanov", image = getImageByName("v_markitanov.jpg")),
+                User(firstName = "Вадим", lastName = "Маркитанов", image = getImageByName("v_markitanov.jpg")),
+                User(firstName = "Герман", lastName = "Доронин", image = getImageByName("g_doronin.jpg")),
                 User(firstName = "Vetochka", lastName = "Mgebri"),
-                User(firstName = "German", lastName = "Doronin"),
                 User(firstName = "Andrey", lastName = "Golovnyov"),
                 User(firstName = "Evgeny", lastName = "Vasilyev"),
                 User(firstName = "Dmitry", lastName = "Kapustin"),
@@ -70,7 +70,7 @@ fun main() {
 
             launch {
                 // Common
-                val commonConversation = conversationService.add(ConversationDto("Common", 1L, listOf(2L, 3L)))
+                val commonConversation = conversationService.add(ConversationDto("Групповой чат", 1L, listOf(2L, 3L)))
                 messageService.add(
                     MessageDto(
                         text = "Common from owner",
@@ -79,10 +79,10 @@ fun main() {
                     )
                 )
 
-                val commonConversation1 = conversationService.add(ConversationDto("second common", 1L, listOf(2L, 3L)))
+                val commonConversation1 = conversationService.add(ConversationDto("Второй группой чат", 1L, listOf(2L, 3L)))
                 messageService.add(
                     MessageDto(
-                        text = "Second common from owner",
+                        text = "Сообщение от владельца",
                         conversationId = commonConversation1.id,
                         ownerId = commonConversation1.ownerId
                     )
@@ -101,7 +101,7 @@ fun main() {
                     )
                 messageService.add(
                     MessageDto(
-                        text = "From: owner, january: 1,  message: 1",
+                        text = "Первое сообщение первого января",
                         conversationId = privateConversation.id,
                         ownerId = privateConversation.ownerId,
                         createTime = LocalDateTime(2022, 1, 1, 16, 57, 0, 0)
@@ -109,7 +109,7 @@ fun main() {
                 )
                 messageService.add(
                     MessageDto(
-                        text = "From: owner, january: 1,  message: 2",
+                        text = "Второе сообщение первого января",
                         conversationId = privateConversation.id,
                         ownerId = privateConversation.ownerId,
                         createTime = LocalDateTime(2022, 1, 1, 17, 57, 0, 0)
@@ -117,7 +117,7 @@ fun main() {
                 )
                 messageService.add(
                     MessageDto(
-                        text = "From: owner, january: 1,  message: 3",
+                        text = "Третье сообщение первого января",
                         conversationId = privateConversation.id,
                         ownerId = privateConversation.ownerId,
                         createTime = LocalDateTime(2022, 1, 1, 18, 57, 0, 0)
@@ -125,7 +125,7 @@ fun main() {
                 )
                 messageService.add(
                     MessageDto(
-                        text = "From: owner, january: 2,  message: 1",
+                        text = "Первое сообщение второго января",
                         conversationId = privateConversation.id,
                         ownerId = privateConversation.ownerId,
                         createTime = LocalDateTime(2022, 1, 2, 13, 57, 0, 0)
@@ -133,7 +133,7 @@ fun main() {
                 )
                 messageService.add(
                     MessageDto(
-                        text = "Private from companion",
+                        text = "Последнее сообщение сегодня",
                         conversationId = privateConversation.id,
                         ownerId = privateCompanionId,
                         edited = true

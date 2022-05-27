@@ -22,15 +22,7 @@ fun Route.conversation(service: ConversationService) {
 
         get("/{userId}") {
             val userId = call.parameters["userId"]?.toLong() ?: throw IllegalStateException("Must provide id")
-            println("Get conversations by user id: $userId")
-
-//            val resultList = mutableListOf<Conversation?>()
             val result = service.selectConversationsByUserId(userId)
-            println("RESULT: $result")
-//            for (res in result) {
-//                resultList.add(service.getById(res.conversationId))
-//            }
-
             call.respond(result)
         }
 
