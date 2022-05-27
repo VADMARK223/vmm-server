@@ -105,8 +105,6 @@ class ConversationService {
             val rowResult = insertedConversation.resultedValues?.first()
 
             val newConversationId = rowResult?.get(Conversations.id) as Long
-            println("newConversationId: $newConversationId")
-
 
             ConversationsUsers.batchInsert(allIds) {
                 this[ConversationsUsers.conversationId] = newConversationId
@@ -181,7 +179,6 @@ class ConversationService {
             throw RuntimeException("Message is null.")
         }
 
-        println("Add message for conversation: ${result.conversationId}!")
         onChange(ChangeType.ADD_MESSAGE, result.conversationId, idsForSend, null, message = result)
     }
 
@@ -196,7 +193,6 @@ class ConversationService {
     }
 
     suspend fun updateLastMessage(conversationId: Long, result: Message?, idsForSend: List<Long>) {
-        println("Update last message for conversation: ${conversationId}!")
         onChange(ChangeType.UPDATE_LAST_MESSAGE, conversationId, idsForSend, null, message = result)
     }
 

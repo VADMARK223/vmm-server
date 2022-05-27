@@ -19,12 +19,14 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Duration
 import kotlinx.datetime.LocalDateTime
+import java.io.File
 
 fun main() {
     embeddedServer(Netty, port = 8888, host = "localhost") {
@@ -49,21 +51,21 @@ fun main() {
             SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
 
             val users = listOf(
-                User(1, "Vadim", "Markitanov"),
-                User(2, "Vetochka", "Mgebri"),
-                User(3, "German", "Doronin"),
-                User(4, "Andrey", "Golovnyov"),
-                User(5, "Evgeny", "Vasilyev"),
-                User(6, "Dmitry", "Kapustin"),
-                User(7, "Roman", "Imaletdinov"),
-                User(8, "Mikhail", "Trishakin")
+                User(firstName = "Vadim", lastName = "Markitanov", image = getImageByName("v_markitanov.jpg")),
+                User(firstName = "Vetochka", lastName = "Mgebri"),
+                User(firstName = "German", lastName = "Doronin"),
+                User(firstName = "Andrey", lastName = "Golovnyov"),
+                User(firstName = "Evgeny", lastName = "Vasilyev"),
+                User(firstName = "Dmitry", lastName = "Kapustin"),
+                User(firstName = "Roman", lastName = "Imaletdinov"),
+                User(firstName = "Mikhail", lastName = "Trishakin")
             )
 
             Users.batchInsert(users) {
-                this[Users.id] = it.id
                 this[Users.firstName] = it.firstName
                 this[Users.lastName] = it.lastName
                 this[Users.online] = it.online
+                this[Users.image] = it.image
             }
 
             launch {
@@ -77,10 +79,10 @@ fun main() {
                     )
                 )
 
-                val commonConversation1 = conversationService.add(ConversationDto("co mm on1", 1L, listOf(2L, 3L)))
+                val commonConversation1 = conversationService.add(ConversationDto("second common", 1L, listOf(2L, 3L)))
                 messageService.add(
                     MessageDto(
-                        text = "Common1 from owner",
+                        text = "Second common from owner",
                         conversationId = commonConversation1.id,
                         ownerId = commonConversation1.ownerId
                     )
@@ -148,4 +150,16 @@ fun main() {
         configureSockets()
 
     }.start(wait = true)
+}
+
+fun getImageByName(name: String): ByteArray? {
+    val fileName = {}.javaClass.classLoader.getResource(name)?.file
+    println("File: $fileName")
+    val file = fileName?.let { File(it) }
+    if (file != null && file.exists()) {
+        println("GOOD!")
+        return file.readBytes()
+
+    }
+    return null
 }

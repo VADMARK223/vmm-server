@@ -26,7 +26,7 @@ object Users : Table() {
 
 @Serializable
 data class User(
-    val id: Long,
+    val id: Long? = null,
     val firstName: String,
     val lastName: String,
     val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
