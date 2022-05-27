@@ -71,17 +71,7 @@ class ConversationService {
         }
     }
 
-    /*fun updateName(resultRow: ResultRow) {
-        val con = toConversation(resultRow)
-        println("CON: $con")
-    }*/
-
-    fun updateName(conversations: Conversations) {
-        println("COn: $conversations")
-    }
-
     suspend fun add(conversationDto: ConversationDto): Conversation {
-        println("Add conversation dto: $conversationDto")
         lateinit var result: Conversation
         dbQuery {
             val allIds = mutableListOf(conversationDto.ownerId)

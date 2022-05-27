@@ -154,12 +154,9 @@ fun main() {
 
 fun getImageByName(name: String): ByteArray? {
     val fileName = {}.javaClass.classLoader.getResource(name)?.file
-    println("File: $fileName")
     val file = fileName?.let { File(it) }
     if (file != null && file.exists()) {
-        println("GOOD!")
         return file.readBytes()
-
     }
     return null
 }
