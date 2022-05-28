@@ -50,13 +50,13 @@ fun main() {
 
             val users = listOf(
                 User(firstName = "Вадим", lastName = "Маркитанов", image = getImageByName("v_markitanov.jpg")),
+                User(firstName = "Михаил", lastName = "Трищакин", image = getImageByName("m_trishakin.jpg")),
                 User(firstName = "Евгений", lastName = "Васильев", image = getImageByName("e_vasilyev.jpg")),
                 User(firstName = "Герман", lastName = "Доронин", image = getImageByName("g_doronin.jpg")),
                 User(firstName = "Vetochka", lastName = "Mgebri"),
                 User(firstName = "Andrey", lastName = "Golovnyov"),
                 User(firstName = "Dmitry", lastName = "Kapustin"),
-                User(firstName = "Roman", lastName = "Imaletdinov"),
-                User(firstName = "Mikhail", lastName = "Trishakin")
+                User(firstName = "Roman", lastName = "Imaletdinov")
             )
 
             Users.batchInsert(users) {
@@ -117,6 +117,11 @@ fun main() {
                     conversationId = privateConversation.id,
                     ownerId = privateConversation.ownerId,
                     createTime = LocalDateTime(2022, 1, 2, 13, 57, 0, 0)
+                )
+                messageService.add(
+                    text = "Сообщение для редактирования",
+                    conversationId = privateConversation.id,
+                    ownerId = privateConversation.ownerId,
                 )
                 messageService.add(
                     text = "Последнее сообщение сегодня",

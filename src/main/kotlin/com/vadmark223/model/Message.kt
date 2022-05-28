@@ -1,6 +1,7 @@
 package com.vadmark223.model
 
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
@@ -25,10 +26,10 @@ object Messages : Table() {
 
 @Serializable
 data class Message(
-    val id: Long,
+    val id: Long = -1,
     val text: String,
     val ownerId: Long,
-    val createTime: String,
-    val edited: Boolean,
+    val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+    val edited: Boolean = false,
     val conversationId: Long
 )

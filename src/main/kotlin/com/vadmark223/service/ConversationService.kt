@@ -146,7 +146,7 @@ class ConversationService {
             id = row[Messages.id],
             text = row[Messages.text],
             ownerId = row[Messages.ownerId],
-            createTime = row[Messages.createTime].toString(),
+            createTime = row[Messages.createTime],
             edited = row[Messages.edited],
             conversationId = row[Messages.conversationId]
         )

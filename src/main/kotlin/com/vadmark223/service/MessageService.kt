@@ -1,6 +1,5 @@
 package com.vadmark223.service
 
-import com.vadmark223.dto.MessageDto
 import com.vadmark223.model.Conversations
 import com.vadmark223.model.ConversationsUsers
 import com.vadmark223.model.Message
@@ -37,7 +36,9 @@ class MessageService(conversationService: ConversationService) {
     suspend fun getByConversationId(id: Long): List<Message?> = dbQuery {
         Messages.select {
             Messages.conversationId eq id
-        }.map { toMessage(it) }
+        }
+            .orderBy(Messages.createTime, SortOrder.ASC)
+            .map { toMessage(it) }
     }
 
     suspend fun add(
@@ -48,7 +49,7 @@ class MessageService(conversationService: ConversationService) {
         conversationId: Long
     ) {
         this.add(
-            MessageDto(
+            Message(
                 text = text,
                 ownerId = ownerId,
                 createTime = createTime,
@@ -58,15 +59,15 @@ class MessageService(conversationService: ConversationService) {
         )
     }
 
-    suspend fun add(messageDto: MessageDto): Message? {
+    suspend fun add(message: Message): Message? {
         var newMessageId by Delegates.notNull<Long>()
         dbQuery {
             val newEntity = Messages.insert {
-                it[text] = messageDto.text
-                it[ownerId] = messageDto.ownerId
-                it[conversationId] = messageDto.conversationId
-                it[createTime] = messageDto.createTime
-                it[edited] = messageDto.edited
+                it[text] = message.text
+                it[ownerId] = message.ownerId
+                it[conversationId] = message.conversationId
+                it[createTime] = message.createTime
+                it[edited] = message.edited
             }
 
             newMessageId = newEntity[Messages.id]
@@ -84,7 +85,47 @@ class MessageService(conversationService: ConversationService) {
                 val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq result.conversationId }
                     .map { it[ConversationsUsers.userId] }
                 conversationService.addMessage(result, userIds)
-                conversationService.updateLastMessage(messageDto.conversationId, result, userIds)
+                conversationService.updateLastMessage(message.conversationId, result, userIds)
+            }
+        }
+
+        return result
+    }
+
+    suspend fun update(message: Message): Message? {
+        dbQuery {
+            Messages.update({ Messages.id eq message.id }) {
+                it[text] = message.text
+                it[ownerId] = message.ownerId
+                it[conversationId] = message.conversationId
+                it[createTime] = message.createTime
+                it[edited] = message.edited
+            }
+        }
+
+        val result = getById(message.id)
+
+        if (result != null) {
+            dbQuery {
+                var needUpdateLastMessage = false
+                val conv = Conversations.select { Conversations.id eq result.conversationId }.singleOrNull()
+                if (conv?.get(Conversations.messageId) == result.id) {
+                    needUpdateLastMessage = true
+                }
+
+                Conversations.update({ Conversations.id eq result.conversationId }) {
+                    if (needUpdateLastMessage) {
+                        it[messageId] = result.id
+                    }
+                    it[updateTime] = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                }
+
+                val userIds = ConversationsUsers.select { ConversationsUsers.conversationId eq result.conversationId }
+                    .map { it[ConversationsUsers.userId] }
+                conversationService.addMessage(result, userIds)
+                if (needUpdateLastMessage) {
+                    conversationService.updateLastMessage(message.conversationId, result, userIds)
+                }
             }
         }
 
@@ -96,7 +137,6 @@ class MessageService(conversationService: ConversationService) {
 
         dbQuery {
             val messageForDelete = getById(id)
-            println("messageForDelete: $messageForDelete")
             if (messageForDelete != null) {
                 result = Messages.deleteWhere { Messages.id eq messageForDelete.id } > 0
                 val userIds =
@@ -107,8 +147,6 @@ class MessageService(conversationService: ConversationService) {
                     .select { Messages.conversationId eq messageForDelete.conversationId }
                     .orderBy(Messages.createTime, SortOrder.ASC)
                     .lastOrNull()
-
-                println("Last message: $lastMessage")
 
                 Conversations.update({ Conversations.id eq messageForDelete.conversationId }) {
                     it[messageId] = if (lastMessage != null) lastMessage[Messages.id] else null
@@ -132,7 +170,7 @@ class MessageService(conversationService: ConversationService) {
             id = row[Messages.id],
             text = row[Messages.text],
             ownerId = row[Messages.ownerId],
-            createTime = row[Messages.createTime].toString(),
+            createTime = row[Messages.createTime],
             edited = row[Messages.edited],
             conversationId = row[Messages.conversationId]
         )

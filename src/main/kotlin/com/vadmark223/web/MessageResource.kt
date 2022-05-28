@@ -1,6 +1,6 @@
 package com.vadmark223.web
 
-import com.vadmark223.dto.MessageDto
+import com.vadmark223.model.Message
 import com.vadmark223.service.MessageService
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -32,11 +32,15 @@ fun Route.message(service: MessageService) {
         }
 
         put {
-            val messageDto = call.receive<MessageDto>()
-            println("Message dto: $messageDto")
+            val message = call.receive<Message>()
 
-            val newEntity = service.add(messageDto)
-            if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
+            if (message.id == -1L) {
+                val newEntity = service.add(message)
+                if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
+            } else {
+                val newEntity = service.update(message)
+                if (newEntity == null) call.respond(HttpStatusCode.NotFound) else call.respond(newEntity)
+            }
         }
 
         delete("/{id}") {

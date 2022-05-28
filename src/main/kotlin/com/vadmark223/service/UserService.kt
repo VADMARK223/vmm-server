@@ -53,7 +53,6 @@ class UserService(conversationService: ConversationService) {
 
         dbQuery {
             val updated = getById(userId)
-            println("updated: $updated")
             listener.invoke(UserNotification(ChangeType.UPDATE, userId, updated))
         }
     }
