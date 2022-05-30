@@ -28,7 +28,7 @@ object Users : Table() {
 data class User(
     val id: Long? = null,
     val firstName: String,
-    val lastName: String,
+    val lastName: String = "",
     val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val online: Boolean = false,
     val image: ByteArray? = null
