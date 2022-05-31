@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import kotlin.properties.Delegates
 
 /**
@@ -31,13 +32,21 @@ class MessageService(conversationService: ConversationService) {
     }
 
     suspend fun getByConversationId(id: Long): List<Message?> = dbQuery {
-        Messages.select {
+        Messages
+//            .innerJoin(Messages, { Files.id }, { Messages.id })
+            .select(Messages.id.eq(id))
+            .orderBy(Messages.createTime, SortOrder.ASC)
+            .map {
+                toMessage(it)
+            }
+
+        /*Messages.select {
             Messages.conversationId eq id
         }
             .orderBy(Messages.createTime, SortOrder.ASC)
             .map {
                 toMessage(it)
-            }
+            }*/
     }
 
     suspend fun add(
