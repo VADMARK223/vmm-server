@@ -10,4 +10,5 @@ object Files : Table() {
     val id = long("id").autoIncrement()
     val messageId = long("message_id")
     val content = binary("content")
+    override val primaryKey = PrimaryKey(id)
 }

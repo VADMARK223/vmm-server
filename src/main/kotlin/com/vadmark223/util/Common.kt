@@ -23,8 +23,8 @@ fun initDbData(
 ) {
 
     transaction {
-        SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages, Files)
-        SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages, Files)
+        SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages, Files, MessagesFiles)
+        SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages, Files, MessagesFiles)
 
         val users = listOf(
             User(firstName = "Вадим", lastName = "Маркитанов", image = getImageByName("v_markitanov.jpg")),

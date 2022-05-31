@@ -73,9 +73,14 @@ class MessageService(conversationService: ConversationService) {
 
             if (message.file != null) {
                 println("Message with file.")
-                Files.insert {
+                val fileInsets = Files.insert {
                     it[messageId] = newMessageId
                     it[content] = message.file
+                }
+
+                MessagesFiles.insert {
+                    it[messageId] = newMessageId
+                    it[fileId] = fileInsets[Files.id]
                 }
             }
         }
