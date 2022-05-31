@@ -1,9 +1,6 @@
 package com.vadmark223.service
 
-import com.vadmark223.model.Conversations
-import com.vadmark223.model.ConversationsUsers
-import com.vadmark223.model.Message
-import com.vadmark223.model.Messages
+import com.vadmark223.model.*
 import com.vadmark223.service.DatabaseFactory.dbQuery
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
@@ -38,7 +35,9 @@ class MessageService(conversationService: ConversationService) {
             Messages.conversationId eq id
         }
             .orderBy(Messages.createTime, SortOrder.ASC)
-            .map { toMessage(it) }
+            .map {
+                toMessage(it)
+            }
     }
 
     suspend fun add(
@@ -71,6 +70,14 @@ class MessageService(conversationService: ConversationService) {
             }
 
             newMessageId = newEntity[Messages.id]
+
+            if (message.file != null) {
+                println("Message with file.")
+                Files.insert {
+                    it[messageId] = newMessageId
+                    it[content] = message.file
+                }
+            }
         }
 
         val result = getById(newMessageId)

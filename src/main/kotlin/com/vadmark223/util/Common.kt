@@ -22,10 +22,9 @@ fun initDbData(
     messageService: MessageService
 ) {
 
-
     transaction {
-        SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages)
-        SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages)
+        SchemaUtils.drop(Conversations, Users, ConversationsUsers, Messages, Files)
+        SchemaUtils.create(Conversations, Users, ConversationsUsers, Messages, Files)
 
         val users = listOf(
             User(firstName = "Вадим", lastName = "Маркитанов", image = getImageByName("v_markitanov.jpg")),
@@ -57,13 +56,13 @@ fun initDbData(
                 ownerId = 2L
             )
 
-            /*val commonConversation1 =
+            val commonConversation1 =
                 conversationService.add(ConversationDto("Второй группой чат", 1L, listOf(2L, 3L)))
             messageService.add(
                 text = "Сообщение от владельца",
                 conversationId = commonConversation1.id,
                 ownerId = commonConversation1.ownerId
-            )*/
+            )
 
             // Private
             createPrivateConversation(4L, conversationService, messageService)
@@ -86,13 +85,14 @@ suspend fun createPrivateConversation(
                 companionId = privateCompanionId
             )
         )
-    if (privateCompanionId == 3L) {
-        messageService.add(
-            text = "Где котики?",
-            conversationId = privateConversation.id,
-            ownerId = privateConversation.ownerId
-        )
-        /*messageService.add(
+    when (privateCompanionId) {
+        3L -> {
+            messageService.add(
+                text = "Где котики?",
+                conversationId = privateConversation.id,
+                ownerId = privateConversation.ownerId
+            )
+            /*messageService.add(
             text = "Первое сообщение первого января",
             conversationId = privateConversation.id,
             ownerId = privateConversation.ownerId,
@@ -127,18 +127,21 @@ suspend fun createPrivateConversation(
             ownerId = privateCompanionId,
             edited = true
         )*/
-    } else if (privateCompanionId == 2L) {
-        messageService.add(
-            text = "Когда в ЗАГС?",
-            conversationId = privateConversation.id,
-            ownerId = privateConversation.ownerId
-        )
-    } else if (privateCompanionId == 4L) {
-        messageService.add(
-            text = "Я же просил не писать. Я теперь с Владимиром!",
-            conversationId = privateConversation.id,
-            ownerId = privateConversation.ownerId
-        )
+        }
+        2L -> {
+            messageService.add(
+                text = "Когда в ЗАГС?",
+                conversationId = privateConversation.id,
+                ownerId = privateConversation.ownerId
+            )
+        }
+        4L -> {
+            messageService.add(
+                text = "Я же просил не писать. Я теперь с Владимиром!",
+                conversationId = privateConversation.id,
+                ownerId = privateConversation.ownerId
+            )
+        }
     }
 
 }

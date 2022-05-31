@@ -31,5 +31,6 @@ data class Message(
     val ownerId: Long,
     val createTime: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
     val edited: Boolean = false,
-    val conversationId: Long
+    val conversationId: Long,
+    val file: ByteArray? = null
 )
