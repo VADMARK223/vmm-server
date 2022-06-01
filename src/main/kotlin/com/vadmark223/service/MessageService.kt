@@ -33,20 +33,13 @@ class MessageService(conversationService: ConversationService) {
 
     suspend fun getByConversationId(id: Long): List<Message?> = dbQuery {
         Messages
-//            .innerJoin(Messages, { Files.id }, { Messages.id })
-            .select(Messages.id.eq(id))
+            .leftJoin(Files, { Messages.id }, { messageId })
+            .select(Messages.conversationId.eq(id))
             .orderBy(Messages.createTime, SortOrder.ASC)
             .map {
+                println("Res: $it")
                 toMessage(it)
             }
-
-        /*Messages.select {
-            Messages.conversationId eq id
-        }
-            .orderBy(Messages.createTime, SortOrder.ASC)
-            .map {
-                toMessage(it)
-            }*/
     }
 
     suspend fun add(
